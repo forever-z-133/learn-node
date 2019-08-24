@@ -1,0 +1,13 @@
+{
+  "name": "zyh-node",
+  "version": "1.0.0",
+  "description": "自己玩 node.js",
+  "scripts": {
+    "mp4": "node m3u8ToMp4/index.js",
+    "rename": "node rename/index.js",
+    "find": "node findNotDownload/index.js"
+  },
+  "author": "foreverZ.133",
+  "license": "ISC",
+  "dependencies": {}
+}
