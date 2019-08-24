@@ -28,7 +28,7 @@ const videoFilePath = 'I:/有码';
 // textFilePath = 'I:/种子/竹内爱Ai Takeuchi.txt';
 // textFilePath = 'I:/种子/羽生稀.txt';
 // textFilePath = 'I:/种子/滨崎里绪浜崎りお森下えりか篠原絵梨香.txt';
-textFilePath = 'I:/种子/仁科百华仁科百華momoka nishina.txt'; 
+textFilePath = 'I:/种子/仁科百华仁科百華momoka nishina.txt';
 // 结果导出目录
 // outputPath = 'C:/Users/DELL/Desktop/仁科百华.txt';
 // outputPath = 'C:/Users/DELL/Desktop/冲田杏梨.txt';
@@ -51,10 +51,10 @@ textFilePath = 'I:/种子/仁科百华仁科百華momoka nishina.txt';
 outputPath = 'C:/Users/DELL/Desktop/仁科百华.txt';
 
 /***********************************************
-*
-* 找出下载目录中没有的番号链接
-* 
-*************************************************/
+ *
+ * 找出下载目录中没有的番号链接
+ * 
+ *************************************************/
 
 // 处理特殊结尾
 var reg = /[abcd]$|(_|-)[01234abcd]$/i;
@@ -64,17 +64,18 @@ var will = fs.readFileSync(textFilePath, "utf-8");
 
 // 获取番号名称，key 为名称，value 为链接
 will = will.match(/(^(?:magnet).+$)/gm, '');
-var names = will.reduce((re,url) => {
-  console.log(url);
-  var name = url.match(/\w+[-_]\d+/g)[0];
-	re[name] = url; return re;
+var names = will.reduce((re, url) => {
+	console.log(url);
+	var name = url.match(/\w+[-_]\d+/g)[0];
+	re[name] = url;
+	return re;
 }, {});
 
 // 获取我已有资源名称
 var has = fs.readdirSync(videoFilePath, 'utf8');
 has = has.reduce((re, x) => {
 	var name = x.split('.')[0]
-  name = name.replace(reg, '');
+	name = name.replace(reg, '');
 	return re.concat([name]);
 }, []);
 
@@ -83,20 +84,20 @@ has = has.map(x => x.toLowerCase());
 console.log(names);
 var result = Object.keys(names).filter((name) => {
 	name = name.replace('-', 'add').toLowerCase();
-  name = name.replace(reg, '');
+	name = name.replace(reg, '');
 	return !~has.indexOf(name);
 });
 
 // 对这些番号进行 A-Z 排序
-result = result.sort((a,b) => a.toUpperCase() < b.toUpperCase() ? -1 : 1);
+result = result.sort((a, b) => a.toUpperCase() < b.toUpperCase() ? -1 : 1);
 
 // 获得原番号链接
-result = result.reduce((re,x) => {
+result = result.reduce((re, x) => {
 	return re.concat([names[x]]);
 }, []);
 
 // 生成结果打印
-result = result.reduce((re,x) => {
+result = result.reduce((re, x) => {
 	return re + x + '\r\n';
 }, '');
 
