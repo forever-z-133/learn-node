@@ -18,34 +18,51 @@ function m3u8ToMp4(filePath, outputPath) {
   const txt = fs.readFileSync(filePath, 'utf8');
   const postUrl = 'https://hd1.o0omvo0o.com/rh/898C29A1/SD/';
 
+  // 生成临时文件夹
   let tempDir = path.join(outputPath, "temp");
   !fs.existsSync(tempDir) && fs.mkdirSync(tempDir);
 
-  const hasLists = fs.readdirSync(tempDir);
+  // 已完成的部分
+  const haslist = fs.readdirSync(tempDir);
 
-  let lists = txt.match(/^.+\.ts/gm);
-  if (!lists) throw new Error('匹配错误');
-  const fileNames = [];
+  // 要下载的 ts 文件列表
+  let list = txt.match(/^.+\.ts/gm);
+  if (!list) throw new Error('匹配错误');
+  list = list.map(item => new URL(item, postUrl).href);
+  const listLen = list.length;
 
-  // 下载小 ts 文件
+  // 下载小 ts 文件，且同时下载多条
+  // 空闲数量   当前运行     结果数据
+  let rest = 8,
+    current = 0;
+  const result = [];
   (function loop(index) {
-    const item = lists[index];
-    if (!item) return loaded();
+    const url = list[index];
+    if (!url) return;
 
-    load(item, (name) => {
-      console.log('download...', name);
-      loop(++index);
-    });
+    rest--;
+    if (rest < 0) return;
+
+    load(url, (name) => {
+      rest++;
+      result[index] = name;
+      if (current > listLen - 1 && rest === 8) return loaded(result);
+      console.log('download...', url);
+      loop(++current); // 注意：load 必须异步，不然这个 loop 会先于下面的 loop
+    })
+
+    if (rest > 0) loop(++current);
   })(0);
 
-  function load(item, callback) {
-    const url = new URL(item, postUrl).href;
-    const fileName = (item.match(/\w+.ts/) || [])[0];
+  // 下载单个小 ts 文件
+  function load(url, callback) {
+    if (typeof callback !== 'function') throw new Error('入参有误');
+
+    const fileName = (url.match(/\w+.ts/) || [])[0];
     if (!fileName) throw new Error('名称有误');
 
-    fileNames.push(fileName);
-    if (hasLists.includes(fileName)) {
-      return callback && callback(fileName);
+    if (haslist.includes(fileName)) {
+      return setTimeout(() => callback(fileName), 1);
     }
 
     const stream = fs.createWriteStream(path.join(tempDir, fileName));
@@ -55,23 +72,23 @@ function m3u8ToMp4(filePath, outputPath) {
       });
       res.on('end', () => {
         stream.end();
-        callback && callback(fileName);
+        callback(fileName);
       });
     });
   }
 
   // 全部下载完成
-  function loaded() {
+  function loaded(fileNames) {
     console.log('files download finish');
-    _merge(toMp4);
+    _merge(fileNames, toMp4);
   }
 
   // 合并小 ts 文件为 new.ts
-  function _merge(callback) {
-    if (hasLists.includes('new.ts')) return callback && callback();
+  function _merge(fileNames, callback) {
+    // if (haslist.includes('new.ts')) return callback && callback();
 
-    let str = `copy ${fileNames.join('+')} new.ts`;
-    const bat = child_process.spawn('cmd.exe', ['/c', str], {
+    let command = `copy /b ${fileNames.join('+')} new.ts`;
+    const bat = child_process.spawn('cmd.exe', ['/c', command], {
       cwd: tempDir
     });
     bat.on('exit', (code) => {
