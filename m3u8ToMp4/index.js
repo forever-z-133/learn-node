@@ -11,71 +11,39 @@ const child_process = require('child_process');
  * 根据 m3u8 文件下载 ts，并拼成 mp4 文件
  */
 
-const join = (name) => path.join(__dirname, name);
-m3u8ToMp4(join('./playlist.m3u8'), join('./'));
+m3u8ToMp4('https://hd1.o0omvo0o.com/rh/898C29A1/SD/playlist.m3u8', __dirname);
 
-function m3u8ToMp4(filePath, outputPath) {
-  const txt = fs.readFileSync(filePath, 'utf8');
-  const postUrl = 'https://hd1.o0omvo0o.com/rh/898C29A1/SD/';
-
-  // 生成临时文件夹
+async function m3u8ToMp4(filePath, outputPath) {
+  // 生成临时文件夹，存放临时下载的东西
   let tempDir = path.join(outputPath, "temp");
   !fs.existsSync(tempDir) && fs.mkdirSync(tempDir);
 
-  // 已完成的部分
+  // 下载 m3u8 文件
+  const { txt } = await download(filePath, tempDir);
+  const postUrl = path.join(filePath, '../');
+
+  // 已完成的文件，比如中断等原因
   const haslist = fs.readdirSync(tempDir);
 
   // 要下载的 ts 文件列表
   let list = txt.match(/^.+\.ts/gm);
   if (!list) throw new Error('匹配错误');
   list = list.map(item => new URL(item, postUrl).href);
-  const listLen = list.length;
 
   // 下载小 ts 文件，且同时下载多条
-  // 空闲数量   当前运行     结果数据
-  let rest = 8,
-    current = 0;
-  const result = [];
-  (function loop(index) {
-    const url = list[index];
-    if (!url) return;
+  forEachAsync(list, {
+    customAjax: async (url, next) => {
+      const fileName = (url.match(/\w+.ts/) || [])[0];
+      if (!fileName) throw new Error('名称有误');
 
-    rest--;
-    if (rest < 0) return;
-
-    load(url, (name) => {
-      rest++;
-      result[index] = name;
-      if (current > listLen - 1 && rest === 8) return loaded(result);
       console.log('download...', url);
-      loop(++current); // 注意：load 必须异步，不然这个 loop 会先于下面的 loop
-    })
+      if (haslist.includes(fileName)) return next(fileName);
 
-    if (rest > 0) loop(++current);
-  })(0);
-
-  // 下载单个小 ts 文件
-  function load(url, callback) {
-    if (typeof callback !== 'function') throw new Error('入参有误');
-
-    const fileName = (url.match(/\w+.ts/) || [])[0];
-    if (!fileName) throw new Error('名称有误');
-
-    if (haslist.includes(fileName)) {
-      return setTimeout(() => callback(fileName), 1);
-    }
-
-    const stream = fs.createWriteStream(path.join(tempDir, fileName));
-    https.get(url, (res) => {
-      res.on('data', (chunk) => {
-        stream.write(chunk);
-      });
-      res.on('end', () => {
-        stream.end();
-        callback(fileName);
-      });
-    });
-  }
+      await download(url, tempDir, fileName, () => {});
+      return next(fileName);
+    },
+    finish: loaded
+  });
 
   // 全部下载完成
   function loaded(fileNames) {
@@ -85,8 +53,6 @@ function m3u8ToMp4(filePath, outputPath) {
 
   // 合并小 ts 文件为 new.ts
   function _merge(fileNames, callback) {
-    // if (haslist.includes('new.ts')) return callback && callback();
-
     let command = `copy /b ${fileNames.join('+')} new.ts`;
     const bat = child_process.spawn('cmd.exe', ['/c', command], {
       cwd: tempDir
@@ -125,5 +91,65 @@ function m3u8ToMp4(filePath, outputPath) {
     //   console.log('cmd finish');
     //   callback && callback();
     // });
+  }
+}
+
+// 下载文件
+function download(url, output, fileName, callback) {
+  return new Promise(resolve => {
+    fileName = fileName || url.slice(url.lastIndexOf('/'));
+    if (!fileName) throw new Error('没找到文件名');
+    const filePath = path.join(output, fileName);
+    const stream = fs.createWriteStream(filePath);
+    https.get(url, (res) => {
+      res.on('data', (chunk) => {
+        stream.write(chunk);
+      });
+      res.on('end', () => {
+        stream.end();
+        const txt = fs.readFileSync(filePath, 'utf8');
+        callback ? callback() : resolve({ filePath, txt });
+      });
+    });
+  });
+}
+
+// 异步循环，但需要自己写 customAjax 异步过程
+function forEachAsync(data, options) {
+  options = options || {};
+  var timesConfig = Math.min(options.number || 5, 8); // 最大线程数
+
+  var rest = timesConfig; // 剩余线程数
+  var current = 0; // 当前已进行索引（未必已完成）
+  var result = []; // 结果数据
+  (function loop(index) {
+    const item = data[index];
+    if (!item) return;
+    rest--;
+    if (rest < 0) return;
+
+    _ajax(item, function (res) {
+      rest++;
+      result[index] = res || item;
+      if (current > data.length - 1 && rest === timesConfig) return finish(result);
+      // 注意：_ajax 必须异步，不然这个 loop 会先于下面的 loop
+      setTimeout(() => {
+        loop(++current);
+      }, 1);
+    })
+
+    if (rest > 0) loop(++current);
+  })(0);
+
+  // 每次一个数据，走完则回调
+  function _ajax(item, next) {
+    if (options.customAjax) {
+      return options.customAjax(item, next, current);
+    }
+  }
+
+  // 全部运行完成
+  function finish(result) {
+    options.finish && options.finish(result);
   }
 }
