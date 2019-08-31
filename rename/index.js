@@ -1,13 +1,19 @@
 const fs = require('fs');
 const path = require('path');
-const args = process.argv.slice(2);
+const inquirer = require('inquirer');
 
 /**
  * 将文件全部重命名为 ABCadd001 格式
  */
 
-rename('I:/无码');
-rename('I:/有码');
+inquirer.prompt([{
+  type: "input",
+  name: "folder",
+  message: "进行重命名的文件夹"
+}]).then(res => {
+  rename(res.folder);
+});
+// rename('I:/有码');
 
 function rename(filePath) {
   const fileNames = fs.readdirSync(filePath, "utf-8");
@@ -33,6 +39,7 @@ function rename(filePath) {
     });
 
     // 无需重命名的直接跳过
+    console.log(index, name, newName);
     if (name === newName) return loop(++index);
 
     // 开始重命名

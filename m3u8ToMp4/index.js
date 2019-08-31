@@ -1,17 +1,18 @@
 const fs = require('fs');
 const path = require('path');
-const {
-  URL
-} = require('url');
+const { URL } = require('url');
 const https = require('https');
 const child_process = require('child_process');
+const args = process.argv.slice(2);
 
 
 /**
  * 根据 m3u8 文件下载 ts，并拼成 mp4 文件
  */
 
-m3u8ToMp4('https://hd1.o0omvo0o.com/rh/898C29A1/SD/playlist.m3u8', __dirname);
+const [ url ] = args;
+m3u8ToMp4(url, __dirname);
+// m3u8ToMp4('https://hd1.o0omvo0o.com/rh/898C29A1/SD/playlist.m3u8', __dirname);
 
 async function m3u8ToMp4(filePath, outputPath) {
   // 生成临时文件夹，存放临时下载的东西

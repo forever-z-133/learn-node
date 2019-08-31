@@ -11,6 +11,7 @@
   "author": "foreverZ.133",
   "license": "ISC",
   "dependencies": {
-    "bmob": "https://github.com/bmob/hydrogen-js-sdk/"
+    "bmob": "https://github.com/bmob/hydrogen-js-sdk/",
+    "inquirer": "^7.0.0"
   }
 }
