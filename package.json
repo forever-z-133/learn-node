@@ -7,6 +7,7 @@
     "rename": "node rename/index.js",
     "find": "node findNotDownload/index.js",
     "bmob": "node bmob/index.js",
+    "readline": "node readline/index.js",
     "color": "node consoleColor/index.js"
   },
   "author": "foreverZ.133",
