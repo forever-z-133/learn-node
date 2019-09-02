@@ -6,7 +6,8 @@
     "mp4": "node m3u8ToMp4/index.js",
     "rename": "node rename/index.js",
     "find": "node findNotDownload/index.js",
-    "bmob": "node bmob/index.js"
+    "bmob": "node bmob/index.js",
+    "color": "node consoleColor/index.js"
   },
   "author": "foreverZ.133",
   "license": "ISC",
