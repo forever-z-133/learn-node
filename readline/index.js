@@ -1,39 +1,6 @@
 const readline = require('readline');
-const inquirer = require('inquirer');
-const sleep = (delay) => new Promise(resolve => setTimeout(resolve, delay));
-
-// prompt 修改行首文本
-// online 监听回车才算一行
-// (() => {
-//   const rl = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout,
-//     prompt: '请输入> '
-//   });
-
-//   rl.prompt();
-//   setTimeout(() => {
-//     // write 时跟手动输入差不多，和 console 是不同的
-//     rl.write('hello\n');
-//   }, 500);
-
-//   rl.on('line', (line) => {
-//     line = line.trim();
-//     if (line.trim() === 'close') return rl.close();
-//     switch (line.trim()) {
-//       case 'hello':
-//         console.log('world!');
-//         break;
-//       default:
-//         console.log(`你输入的是：'${line.trim()}'`);
-//         break;
-//     }
-//     rl.prompt();
-//   }).on('close', () => {
-//     console.log('再见!');
-//     process.exit(0);
-//   });
-// })();
+const util = require('util');
+const sleep = util.promisify((delay, next) => setTimeout(next, delay));
 
 (async () => {
   const rl = readline.createInterface({
@@ -85,3 +52,36 @@ const sleep = (delay) => new Promise(resolve => setTimeout(resolve, delay));
 
   // rl.close();
 })();
+
+// prompt 修改行首文本
+// online 监听回车才算一行
+// (() => {
+//   const rl = readline.createInterface({
+//     input: process.stdin,
+//     output: process.stdout,
+//     prompt: '请输入> '
+//   });
+
+//   rl.prompt();
+//   setTimeout(() => {
+//     // write 时跟手动输入差不多，和 console 是不同的
+//     rl.write('hello\n');
+//   }, 500);
+
+//   rl.on('line', (line) => {
+//     line = line.trim();
+//     if (line.trim() === 'close') return rl.close();
+//     switch (line.trim()) {
+//       case 'hello':
+//         console.log('world!');
+//         break;
+//       default:
+//         console.log(`你输入的是：'${line.trim()}'`);
+//         break;
+//     }
+//     rl.prompt();
+//   }).on('close', () => {
+//     console.log('再见!');
+//     process.exit(0);
+//   });
+// })();
