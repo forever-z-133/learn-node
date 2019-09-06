@@ -1,5 +1,6 @@
 ## 视频下载时的临时文件
 m3u8ToMp4/temp
+m3u8ToMp4/new.ts
 
 ## npm 相关
 node_modules
