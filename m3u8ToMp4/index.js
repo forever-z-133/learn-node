@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
 const https = require('https');
-const child_process = require('child_process');
+const spawn = require('cross-spawn');
 const args = process.argv.slice(2);
 
 
@@ -65,7 +65,7 @@ async function m3u8ToMp4(filePath, outputPath) {
   // 合并小 ts 文件为 new.ts
   function _merge(fileNames, callback) {
     let command = `copy /b ${fileNames.join('+')} ${outputName}.ts`;
-    const bat = child_process.spawn('cmd.exe', ['/c', command], {
+    const bat = spawn('cmd.exe', ['/c', command], {
       cwd: tempDir
     });
     bat.on('exit', (code) => {
@@ -78,8 +78,8 @@ async function m3u8ToMp4(filePath, outputPath) {
   // 将 new.ts 转为 new.mp4
   function tsToMp4(callback) {
 
-    child_process.spawn('explorer.exe', [outputPath]);
-    child_process.spawn('cmd.exe', ['/c', 'msg * "ts 转 mp4 还没完成，已可用格式工厂将 new.ts 转为想要的格式"']);
+    spawn('explorer.exe', [outputPath]);
+    spawn('cmd.exe', ['/c', 'msg * "ts 转 mp4 还没完成，已可用格式工厂将 new.ts 转为想要的格式"']);
 
     // const ffmpeg_path = join('./libs/ffmpeg');
 

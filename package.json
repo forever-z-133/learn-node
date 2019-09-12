@@ -14,7 +14,7 @@
   "author": "foreverZ.133",
   "license": "ISC",
   "dependencies": {
-    "bmob": "https://github.com/bmob/hydrogen-js-sdk/",
+    "cross-spawn": "^7.0.0",
     "inquirer": "^7.0.0"
   }
 }
