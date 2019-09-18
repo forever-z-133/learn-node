@@ -9,6 +9,7 @@
     "bmob": "node bmob/index.js",
     "readline": "node readline/index.js",
     "alert": "node alert/index.js",
+    "json": "node json/index.js",
     "color": "node consoleColor/index.js"
   },
   "author": "foreverZ.133",
