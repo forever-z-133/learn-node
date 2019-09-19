@@ -1,8 +1,6 @@
 const fs = require('fs');
 const inquirer = require('inquirer');
 
-
-
 (async () => {
   const type = await chooseType();
   const url = __dirname + '/temp.json';
@@ -52,4 +50,8 @@ async function chooseType() {
     }]
   }]);
   return answer.type;
+}
+
+module.exports = {
+  readJson, writeJson
 }

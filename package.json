@@ -1,7 +1,11 @@
 {
-  "name": "zyh-node",
-  "version": "1.0.0",
+  "name": "zyh-node-2",
+  "version": "1.0.2",
   "description": "自己玩 node.js",
+  "bin": {
+    "zyh-node-2": "./.bin/cli.js"
+  },
+  "main": "./json/index.js",
   "scripts": {
     "mp4": "node m3u8ToMp4/index.js",
     "rename": "node rename/index.js",
