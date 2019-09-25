@@ -2,6 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
+// 类型判断
+function typeOf(obj) {
+  var typeStr = Object.prototype.toString.call(obj).split(" ")[1];
+  return typeStr.substr(0, typeStr.length - 1).toLowerCase();
+}
+
 // 包括其下所有文件及文件夹
 function emptyDirSync(dir) {
   const files = [];
@@ -85,12 +91,17 @@ function getFileName(filePath) {
 }
 
 // 获取本地或远程文件的文本内容
-async function getUrlContent(url) {
+async function getUrlContent(url, dir) {
   let filePath = url;
-  var isUrl = /https?:/i.test(filePath);
+  const isUrl = /https?:/i.test(filePath);
+  const isAbsolutePath = /^[A-Z]\:/i.test(filePath);
   if (isUrl) {
     filePath = path.join(__dirname, getFileName(url));
     await download(url, filePath);
+  } else if (isAbsolutePath) {
+    filePath = filePath;
+  } else {
+    filePath = path.join(dir, url);
   }
   const res = fs.readFileSync(filePath, 'utf8');
   isUrl && fs.unlinkSync(filePath);
@@ -98,6 +109,7 @@ async function getUrlContent(url) {
 }
 
 module.exports = {
+  typeOf,
   emptyDirSync,
   removeDirSync,
   makeDirSync,
