@@ -17,34 +17,34 @@ async function previewFont(input, output) {
   output = path.join(output || __dirname, 'temp');
   const cssStr = await getUrlContent(input, process.cwd());
   const cssObj = cssStrToCssObject(cssStr);
-  // console.log(cssObj);
+  
+  forEachDeep(cssObj, 'child', ({key, attrs, child}) => {
+    console.log(key)
+    // if (key.indexOf('@media') > -1) {
+    //   console.log(child);
+    // }
+  });
 }
 
 function cssStrToCssObject(cssStr) {
 	cssStr = cssStr.replace(/\s*[\t\n]\s*/g, ''); // 去掉换行
   cssStr = cssStr.replace(/\/\*.*?\*\//g, ''); // 去除注释
   
-  console.log(cssStr.match(/(?<=^|})[^}]*?{[^}]*?{.*?}}/)); // 匹配 .x{x{a:1}}
+  const reg = /(?<=^|}|{)\s*([^}{]*?)\s*{(([^}]*?{.*?})|([a-z\-]*?:.*?(?=;|}))*)}/g;
+  const cssObj = (function loop(str, res) {
+    str.replace(reg, (match, key, attrs, child) => {
+      if (child) { // @media{.b{x:1}} 形态的
+        child = loop(child, []);
+        attrs = void 0;
+      } else if (attrs) { // .a{x:1} 形态的
+        attrs = stringToObject(attrs, /\s*;\s*/, /\s*:\s*/);
+      }
+      res.push({ key, attrs, child });
+    });
+    return res;
+  })(cssStr, []);
 
-  // var keyReg = '[@\[\.#][^{]*(?={)';
-  // var attrReg = '(?<=^|[{;])([a-z\-\s*]+):([^;$}]+);?';
-  // var attrsReg = `(${attrReg})+`;
-  // var reg = new RegExp(`(${keyReg}){((${attrsReg}|(${keyReg}{${attrsReg}})+))}`, 'gi');
-  // reg = /([@[.#][^{]*(?={)){((((?<=^|[{;])([a-z-s*]+):([^;$}]+);?)+|([@[.#][^{]*(?={){((?<=^|[{;])([a-z-s*]+):([^;$}]+);?)+})+))}/gi;
-
-  // return (function deep(inner) {
-  //   var result = [];
-  //   inner.replace(reg, (outerHTML, tagName, innerHTML) => {
-  //     var temp = { tagName, outerHTML, innerHTML };
-  //     if (innerHTML.indexOf('{') < 0) {
-  //       temp.attrs = stringToObject(innerHTML, ';', ':');
-  //     } else if (innerHTML) {
-  //       temp.children = deep(innerHTML);
-  //     }
-  //     result.push(temp);
-  //   });
-  //   return result;
-  // })(cssStr);
+  return cssObj;
 }
 
 function forEachDeep(obj, childKey, callback) {
