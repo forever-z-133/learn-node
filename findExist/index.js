@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
+const { convertName } = require('../utils');
 
 /**
  * 看我电脑上是否存在这部影片
@@ -21,19 +22,17 @@ const fileNames = dirs.reduce((re, dir) => {
 
 // 开始动作，递归询问并打印结果
 (function loop() {
-  ask(name => {
+  ask((name, type) => {
     const item = find(name);
     item ? console.log(name, item.filePath) : console.log(name, '没找到');
-    loop();
+    type !== 'args' && loop();
   });
 })();
 
 // 是否存在 XXXadd123 或 xxx-123 这些番号
 function find(name) {
   if (!name) return null;
-  name = name.replace(/(.*?)(add|\-)(.*)/, (match, pre, add, next) => {
-    return pre.toUpperCase() + 'add' + next.toUpperCase();
-  });
+  name = convertName(name);
   return fileNames.filter(item => {
     return item.fileName.includes(name);
   })[0];
@@ -43,7 +42,7 @@ function find(name) {
 function ask(callback) {
 	const args = process.argv.slice(2);
 	if (args.length > 0) {
-		return callback && callback(args[0]);
+		return callback && callback(args.join(' '), 'args');
 	}
   inquirer.prompt([{
     type: "input",

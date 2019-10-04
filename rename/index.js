@@ -26,6 +26,7 @@ function rename(filePath) {
 
     // 获得新名称
     const newName = name.replace(/([a-zA-Z0-9]+)(add|\-)(\d+)([-_]\w|[a-zA-Z])?/, (str, pre, add, num, unit) => {
+      if (pre.length >= 5) pre = pre.replace(/(DB|HD|BD)$/i, '');
       let newStr = pre.toUpperCase() + 'add' + addZero(num, 3);
 
       // 没后缀的直接过

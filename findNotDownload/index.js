@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
-const { getFileName } = require('../utils');
+const { getFileName, convertName } = require('../utils');
 
 // npm run find -- G:\TDDOWNLOAD\种子\吉川爱美.txt
 
@@ -23,12 +23,11 @@ ask(url => {
 	const txt = fs.readFileSync(url, "utf-8");
 
 	// 将每行链接转为对象，key 为番号，value 为链接
-	const links = txt.match(/(^(?:magnet).+$)/gm, '');
+	const links = txt.match(/magnet:?[^\n]+/g, '');
 	const will = links.reduce((re, link) => {
-		let name = link.match(/\w+[-_]\d+/g)[0];
-		name = name.replace(/(.*?)(add|\-)(.*)/, (match, pre, add, next) => {
-			return pre.toUpperCase() + 'add' + next.toUpperCase();
-		});
+		// TODO: 这个正则还有问题，需改
+		let name = (link.match(/(((?!Carib|arib|rib|ib|b)\w)+|\d+)[\-\_]\w*\d+/g) || [])[0];
+		name = convertName(name);
 		re[name] = link;
 		return re;
 	}, {});
@@ -47,7 +46,7 @@ ask(url => {
 	// console.log(result);
 	const fileName = getFileName(url);
 	const outputPath = path.join('C:/Users/DELL/Desktop/', fileName);
-	fs.writeFileSync(outputPath, result.join('\r\n'), 'utf8');
+	fs.writeFileSync(outputPath, result.join(''), 'utf8');
 	console.log('已导出到桌面');
 });
 
@@ -55,7 +54,7 @@ ask(url => {
 function ask(callback) {
 	const args = process.argv.slice(2);
 	if (args.length > 0) {
-		return callback && callback(args[0]);
+		return callback && callback(args.join(' '));
 	}
   inquirer.prompt([{
     type: "input",
@@ -69,9 +68,7 @@ function ask(callback) {
 // 从已下载中找到相应番号
 function find(name) {
   if (!name) return null;
-  name = name.replace(/(.*?)(add|\-)(.*)/, (match, pre, add, next) => {
-    return pre.toUpperCase() + 'add' + next.toUpperCase();
-  });
+  name = convertName(name);
   return has.filter(item => {
     return item.fileName.includes(name);
   })[0];

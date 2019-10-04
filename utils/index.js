@@ -108,6 +108,21 @@ async function getUrlContent(url, dir) {
   return res;
 }
 
+// 补零
+function addZero(num, len = 2) {
+  let numLen = (num + '').length;
+  while (numLen++ < len) num = '0' + num;
+  return num + '';
+}
+
+// 转化为可用番号
+function convertName(name) {convertName
+	return name.replace(/(.*?)(add|\-|\_)(.*)/, (match, pre, add, next) => {
+    if (pre.length >= 5) pre = pre.replace(/(DB|HD|BD)$/i, '');
+    return pre.toUpperCase() + 'add' + addZero(next.toUpperCase(), 3);
+  });
+}
+
 module.exports = {
   typeOf,
   emptyDirSync,
@@ -117,6 +132,8 @@ module.exports = {
   readJson,
   writeJson,
   getFileName,
-  getUrlContent
+  getUrlContent,
+  addZero,
+  convertName
 }
 module.exports.default = module.exports;
