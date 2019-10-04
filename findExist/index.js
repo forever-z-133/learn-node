@@ -7,7 +7,7 @@ const inquirer = require('inquirer');
  */
 
 // 获取这四个文件夹里的所有文件名
-var dirs = ['F:\下载', 'F:\下载3', 'I:\无码', 'I:\有码'];
+const dirs = ['F:\下载', 'F:\下载3', 'I:\无码', 'I:\有码'];
 const fileNames = dirs.reduce((re, dir) => {
   let names = fs.readdirSync(dir) || [];
   names = names.map(name => {
@@ -23,7 +23,7 @@ const fileNames = dirs.reduce((re, dir) => {
 (function loop() {
   ask(name => {
     const item = find(name);
-    item ? console.log(name, item.filePath) : console.log('没找到');
+    item ? console.log(name, item.filePath) : console.log(name, '没找到');
     loop();
   });
 })();
@@ -41,11 +41,16 @@ function find(name) {
 
 // cmd 交互询问查哪个
 function ask(callback) {
+	const args = process.argv.slice(2);
+	if (args.length > 0) {
+		return callback && callback(args[0]);
+	}
   inquirer.prompt([{
     type: "input",
     name: "name",
-    message: "你要找哪个番号"
+    message: "你要找哪个番号\x1B[32m（输入n回车可关闭）\x1B[0m"
   }]).then(({ name }) => {
+    if (name === 'n') process.exit(0);
     callback && callback(name);
   });
 }

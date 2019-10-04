@@ -87,7 +87,7 @@ function writeJson(url, data) {
 
 // 获取文本名（不妙）
 function getFileName(filePath) {
-  return filePath.slice(filePath.lastIndexOf('/') + 1);
+  return filePath.split(/[\/\\]/).slice(-1)[0];
 }
 
 // 获取本地或远程文件的文本内容

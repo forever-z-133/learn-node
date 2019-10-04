@@ -1,105 +1,78 @@
 const fs = require('fs');
+const path = require('path');
+const inquirer = require('inquirer');
+const { getFileName } = require('../utils');
 
-/**
- * 从 txt 中找到我还没有的影片链接
- */
-let textFilePath = '';
-let outputPath = '';
-// 已下载目录
-const videoFilePath = 'I:/有码';
-// const videoFilePath = 'I:/无码';
-// 含有番号链接的文件
-// textFilePath = 'I:/种子/仁科百华仁科百華momoka nishina.txt';
-// textFilePath = 'I:/种子/冲田杏梨沖田杏梨観月あかねAnnri Okita.txt';
-// textFilePath = 'I:/种子/京香julia.txt';
-// textFilePath = 'I:/种子/水无濑优夏みなせ优夏上原実花Minase Yuuka.txt';
-// textFilePath = 'I:/种子/愛実れい爱实丽.txt';
-// textFilePath = 'I:/种子/くるみ未来Mirai.txt';
-// textFilePath = 'I:/种子/爱田奈奈愛田奈々Nana Aida三津奈津美三津なつみNatsumi Mitsu.txt';
-// textFilePath = 'I:/种子/本田莉子ほんだりこ仲里纱羽.txt';
-// textFilePath = 'I:/种子/吉永茜.txt';
-// textFilePath = 'I:/种子/藍沢潤(蓝泽润Jun Aizawa).txt';
-// textFilePath = 'I:/种子/葵司葵つかさTSUKASA AOI.txt';
-// textFilePath = 'I:/种子/原千草京野ゆめ尾崎あかり.txt';
-// textFilePath = 'I:/种子/泷川索菲亚滝川ソフィアTAKIGAWA SOFIA.txt';
-// textFilePath = 'I:/种子/葵葵S1Aoi.txt';
-// textFilePath = 'I:/种子/sky high.txt';
-// textFilePath = 'I:/种子/中村知恵なかむらともえ.txt';
-// textFilePath = 'I:/种子/竹内爱Ai Takeuchi.txt';
-// textFilePath = 'I:/种子/羽生稀.txt';
-// textFilePath = 'I:/种子/滨崎里绪浜崎りお森下えりか篠原絵梨香.txt';
-textFilePath = 'I:/种子/仁科百华仁科百華momoka nishina.txt';
-// 结果导出目录
-// outputPath = 'C:/Users/DELL/Desktop/仁科百华.txt';
-// outputPath = 'C:/Users/DELL/Desktop/冲田杏梨.txt';
-// outputPath = 'C:/Users/DELL/Desktop/JULIA.txt';
-// outputPath = 'C:/Users/DELL/Desktop/水无濑优夏.txt';
-// outputPath = 'C:/Users/DELL/Desktop/爱实丽.txt';
-// outputPath = 'C:/Users/DELL/Desktop/雏形未来.txt';
-// outputPath = 'C:/Users/DELL/Desktop/爱田奈奈.txt';
-// outputPath = 'C:/Users/DELL/Desktop/本田莉子.txt';
-// outputPath = 'C:/Users/DELL/Desktop/吉永茜.txt';
-// outputPath = 'C:/Users/DELL/Desktop/蓝泽润.txt';
-// outputPath = 'C:/Users/DELL/Desktop/葵司.txt';
-// outputPath = 'C:/Users/DELL/Desktop/原千草.txt';
-// outputPath = 'C:/Users/DELL/Desktop/泷川索菲亚.txt';
-// outputPath = 'C:/Users/DELL/Desktop/sky.txt';
-// outputPath = 'C:/Users/DELL/Desktop/中村知恵.txt';
-// outputPath = 'C:/Users/DELL/Desktop/竹内爱.txt';
-// outputPath = 'C:/Users/DELL/Desktop/羽生稀.txt';
-// outputPath = 'C:/Users/DELL/Desktop/滨崎里绪.txt';
-outputPath = 'C:/Users/DELL/Desktop/仁科百华.txt';
+// npm run find -- G:\TDDOWNLOAD\种子\吉川爱美.txt
 
-/***********************************************
- *
- * 找出下载目录中没有的番号链接
- * 
- *************************************************/
-
-// 处理特殊结尾
-var reg = /[abcd]$|(_|-)[01234abcd]$/i;
-
-// 获取番号链接列表
-var will = fs.readFileSync(textFilePath, "utf-8");
-
-// 获取番号名称，key 为名称，value 为链接
-will = will.match(/(^(?:magnet).+$)/gm, '');
-var names = will.reduce((re, url) => {
-	console.log(url);
-	var name = url.match(/\w+[-_]\d+/g)[0];
-	re[name] = url;
-	return re;
-}, {});
-
-// 获取我已有资源名称
-var has = fs.readdirSync(videoFilePath, 'utf8');
-has = has.reduce((re, x) => {
-	var name = x.split('.')[0]
-	name = name.replace(reg, '');
-	return re.concat([name]);
+// 获取已下载了的番号
+const dirs = ['F:\下载', 'F:\下载3', 'I:\无码', 'I:\有码'];
+const has = dirs.reduce((re, dir) => {
+  let names = fs.readdirSync(dir) || [];
+  names = names.map(name => {
+    return {
+      fileName: name.split('.')[0],
+      filePath: path.resolve(dir, name).replace(/\\/g, '/'),
+    }
+  })
+  return re.concat(names) ;
 }, []);
 
-// 从番号中找出我没有的番号
-has = has.map(x => x.toLowerCase());
-console.log(names);
-var result = Object.keys(names).filter((name) => {
-	name = name.replace('-', 'add').toLowerCase();
-	name = name.replace(reg, '');
-	return !~has.indexOf(name);
+// 正式开始
+ask(url => {
+	const txt = fs.readFileSync(url, "utf-8");
+
+	// 将每行链接转为对象，key 为番号，value 为链接
+	const links = txt.match(/(^(?:magnet).+$)/gm, '');
+	const will = links.reduce((re, link) => {
+		let name = link.match(/\w+[-_]\d+/g)[0];
+		name = name.replace(/(.*?)(add|\-)(.*)/, (match, pre, add, next) => {
+			return pre.toUpperCase() + 'add' + next.toUpperCase();
+		});
+		re[name] = link;
+		return re;
+	}, {});
+
+	// 看已下载中有没有，没有则将链接存入 result 等待导出
+	const result = [];
+	for (let name in will) {
+		const item = find(name);
+		if (item) continue;
+		const link = will[name];
+		console.log(name, link);
+		result.push(link);
+	}
+
+	// 开始导出
+	// console.log(result);
+	const fileName = getFileName(url);
+	const outputPath = path.join('C:/Users/DELL/Desktop/', fileName);
+	fs.writeFileSync(outputPath, result.join('\r\n'), 'utf8');
+	console.log('已导出到桌面');
 });
 
-// 对这些番号进行 A-Z 排序
-result = result.sort((a, b) => a.toUpperCase() < b.toUpperCase() ? -1 : 1);
+// 获取 txt 文件路径
+function ask(callback) {
+	const args = process.argv.slice(2);
+	if (args.length > 0) {
+		return callback && callback(args[0]);
+	}
+  inquirer.prompt([{
+    type: "input",
+    name: "url",
+    message: "想要读取的种子路径"
+  }]).then(({ url }) => {
+    callback && callback(url);
+  });
+}
 
-// 获得原番号链接
-result = result.reduce((re, x) => {
-	return re.concat([names[x]]);
-}, []);
-
-// 生成结果打印
-result = result.reduce((re, x) => {
-	return re + x + '\r\n';
-}, '');
-
-console.log(result);
-fs.writeFileSync(outputPath, result, 'utf8');
+// 从已下载中找到相应番号
+function find(name) {
+  if (!name) return null;
+  name = name.replace(/(.*?)(add|\-)(.*)/, (match, pre, add, next) => {
+    return pre.toUpperCase() + 'add' + next.toUpperCase();
+  });
+  return has.filter(item => {
+    return item.fileName.includes(name);
+  })[0];
+}
