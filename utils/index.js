@@ -61,8 +61,8 @@ function _download(url, output, fileName, callback) {
   });
 }
 const download = function(url, output, fileName) {
-  return new Promise(resolv => {
-    _download(url, output, fileName, resolv);
+  return new Promise(resolve => {
+    _download(url, output, fileName, resolve);
   });
 }
 
@@ -104,7 +104,7 @@ async function getUrlContent(url, dir) {
     filePath = path.join(dir, url);
   }
   const res = fs.readFileSync(filePath, 'utf8');
-  isUrl && fs.unlinkSync(filePath);
+  isUrl && fs.unlinkSync(filePath); // 是远程的得删掉临时文件
   return res;
 }
 
@@ -115,12 +115,14 @@ function addZero(num, len = 2) {
   return num + '';
 }
 
-// 转化为可用番号
-function convertName(name) {convertName
-	return name.replace(/(.*?)(add|\-|\_)(.*)/, (match, pre, add, next) => {
-    if (pre.length >= 5) pre = pre.replace(/(DB|HD|BD)$/i, '');
-    return pre.toUpperCase() + 'add' + addZero(next.toUpperCase(), 3);
-  });
+// 使用函数结果缓存
+function useCache(fn) {
+  var cache = {};
+  return function(){
+    var key = arguments.length + Array.prototype.join.call(arguments, ",");
+    if (key in cache) return cache[key];
+    else return cache[key] = fn.apply(this, arguments);
+  }
 }
 
 module.exports = {
@@ -134,6 +136,6 @@ module.exports = {
   getFileName,
   getUrlContent,
   addZero,
-  convertName
+  useCache
 }
 module.exports.default = module.exports;

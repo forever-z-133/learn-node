@@ -1,24 +1,9 @@
-const fs = require('fs');
-const path = require('path');
 const inquirer = require('inquirer');
-const { convertName } = require('../utils');
+const { find } = require('../utils/me');
 
 /**
  * 看我电脑上是否存在这部影片
  */
-
-// 获取这四个文件夹里的所有文件名
-const dirs = ['F:\下载', 'F:\下载3', 'I:\无码', 'I:\有码'];
-const fileNames = dirs.reduce((re, dir) => {
-  let names = fs.readdirSync(dir) || [];
-  names = names.map(name => {
-    return {
-      fileName: name.split('.')[0],
-      filePath: path.resolve(dir, name).replace(/\\/g, '/'),
-    }
-  })
-  return re.concat(names) ;
-}, []);
 
 // 开始动作，递归询问并打印结果
 (function loop() {
@@ -28,15 +13,6 @@ const fileNames = dirs.reduce((re, dir) => {
     type !== 'args' && loop();
   });
 })();
-
-// 是否存在 XXXadd123 或 xxx-123 这些番号
-function find(name) {
-  if (!name) return null;
-  name = convertName(name);
-  return fileNames.filter(item => {
-    return item.fileName.includes(name);
-  })[0];
-}
 
 // cmd 交互询问查哪个
 function ask(callback) {

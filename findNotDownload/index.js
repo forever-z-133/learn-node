@@ -1,22 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
-const { getFileName, convertName } = require('../utils');
+const { getFileName } = require('../utils');
+const { convertName, find } = require('../utils/me');
 
 // npm run find -- G:\TDDOWNLOAD\种子\吉川爱美.txt
-
-// 获取已下载了的番号
-const dirs = ['F:\下载', 'F:\下载3', 'I:\无码', 'I:\有码'];
-const has = dirs.reduce((re, dir) => {
-  let names = fs.readdirSync(dir) || [];
-  names = names.map(name => {
-    return {
-      fileName: name.split('.')[0],
-      filePath: path.resolve(dir, name).replace(/\\/g, '/'),
-    }
-  })
-  return re.concat(names) ;
-}, []);
+// npm run find -- G:\TDDOWNLOAD\种子\泷川索菲亚滝川ソフィアTAKIGAWA SOFIA.txt
 
 // 正式开始
 ask(url => {
@@ -26,7 +15,8 @@ ask(url => {
 	const links = txt.match(/magnet:?[^\n]+/g, '');
 	const will = links.reduce((re, link) => {
 		// TODO: 这个正则还有问题，需改
-		let name = (link.match(/(((?!Carib|arib|rib|ib|b)\w)+|\d+)[\-\_]\w*\d+/g) || [])[0];
+		let name = (link.match(/(\w+|\d+)[\-\_]\w*\d+/g) || [])[0];
+		if (!name) throw new Error('问题链接：' + link);
 		name = convertName(name);
 		re[name] = link;
 		return re;
@@ -54,7 +44,7 @@ ask(url => {
 function ask(callback) {
 	const args = process.argv.slice(2);
 	if (args.length > 0) {
-		return callback && callback(args.join(' '));
+		return callback && callback(args.join(' '), 'args');
 	}
   inquirer.prompt([{
     type: "input",
@@ -63,13 +53,4 @@ function ask(callback) {
   }]).then(({ url }) => {
     callback && callback(url);
   });
-}
-
-// 从已下载中找到相应番号
-function find(name) {
-  if (!name) return null;
-  name = convertName(name);
-  return has.filter(item => {
-    return item.fileName.includes(name);
-  })[0];
 }
