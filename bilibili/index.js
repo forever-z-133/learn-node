@@ -12,6 +12,7 @@ const axios = require('axios');
 // https://api.bilibili.com/medialist/gateway/base/created?pn=1&ps=100&up_mid=32804063&is_space=0&jsonp=jsonp
 
 // 拿收藏夹内容
+// https://api.bilibili.com/medialist/gateway/base/spaceDetail?media_id=55504663&pn=1&ps=20&keyword=&order=mtime&type=0&tid=0&jsonp=jsonp
 axios.get('https://api.bilibili.com/medialist/gateway/base/spaceDetail', {
   params: {
     pn: 1,

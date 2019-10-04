@@ -10,6 +10,7 @@
     "mp4": "node m3u8ToMp4/index.js",
     "rename": "node rename/index.js",
     "find": "node findNotDownload/index.js",
+    "exist": "node findExist/index.js",
     "bmob": "node bmob/index.js",
     "readline": "node readline/index.js",
     "alert": "node alert/index.js",
