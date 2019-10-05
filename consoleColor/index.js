@@ -39,7 +39,7 @@
   }
 })();
 
-console.log('这是红色'.red)
+process.argv[2] === 'test' && console.log('这是红色'.red)
 
 // https://www.cnblogs.com/lienhua34/p/5018119.html
 // var _colorConfig2 = {

@@ -3,6 +3,7 @@ const path = require('path');
 const inquirer = require('inquirer');
 const { getFileName, dataToArray } = require('../utils');
 const { convertName, find } = require('../utils/me');
+require('../consoleColor');
 
 // npm run find -- G:\TDDOWNLOAD\种子\吉川爱美.txt
 // npm run find -- G:\TDDOWNLOAD\种子\泷川索菲亚滝川ソフィアTAKIGAWA SOFIA.txt
@@ -27,7 +28,7 @@ ask(url => {
 	for (let name in will) {
 		const item = find(name);
 		const link = will[name];
-		console.log(item ? '\x1B[32m已下載\x1B[0m' : '\x1B[31m未下載\x1B[0m', name.padEnd(12, ' '), link);
+		console.log(item ? '已下載'.green : '未下載'.red, name.padEnd(12, ' '), link);
 		if (item) continue;
 		result.push({ name, link });
 	}

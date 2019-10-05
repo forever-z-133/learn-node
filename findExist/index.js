@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 const { find } = require('../utils/me');
+require('../consoleColor');
 
 /**
  * 看我电脑上是否存在这部影片
@@ -21,9 +22,9 @@ function ask(callback) {
 		return callback && callback(args.join(' '), 'args');
 	}
   inquirer.prompt([{
-    type: "input",
-    name: "name",
-    message: "你要找哪个番号\x1B[32m（输入n回车可关闭）\x1B[0m"
+    type: 'input',
+    name: 'name',
+    message: '你要找哪个番号' + '（输入n回车可关闭）'.green
   }]).then(({ name }) => {
     if (name === 'n') process.exit(0);
     callback && callback(name);

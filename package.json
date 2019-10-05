@@ -17,7 +17,7 @@
     "json": "node json/index.js",
     "font": "node previewFont/index.js",
     "bilibili": "node bilibili/index.js",
-    "color": "node consoleColor/index.js"
+    "color": "node consoleColor/index.js test"
   },
   "author": "foreverZ.133",
   "license": "ISC",
