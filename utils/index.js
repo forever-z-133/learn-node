@@ -125,6 +125,27 @@ function useCache(fn) {
   }
 }
 
+// [{a:1},{a:2}], 'a' => [1,2]
+function dataToArray(data, key, options) {
+  if (typeOf(data) !== 'array' || !data.length) return [];
+  if (!key) throw new Error('第二位入参有误');
+
+  options = options || {};
+  var noEmpty = options.noEmpty || false; // 排除值为空的
+  var deepKey = options.deepKey || ''; // 按某 key 向下递归
+
+  return data.reduce(function (re, item) {
+    var value = item[key],
+      deep = [];
+    if (noEmpty && value == undefined) return re;
+    if (deepKey) {
+      var child = typeOf(item) === 'array' ? item : item[deepKey];
+      deep = dataToArray(child, key, options);
+    }
+    return re.concat([value], deep);
+  }, []);
+}
+
 module.exports = {
   typeOf,
   emptyDirSync,
@@ -136,6 +157,7 @@ module.exports = {
   getFileName,
   getUrlContent,
   addZero,
-  useCache
+  useCache,
+  dataToArray
 }
 module.exports.default = module.exports;
