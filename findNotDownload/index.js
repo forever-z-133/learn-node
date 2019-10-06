@@ -7,6 +7,16 @@ require('../consoleColor');
 
 // npm run find -- G:\TDDOWNLOAD\种子\吉川爱美.txt
 // npm run find -- G:\TDDOWNLOAD\种子\泷川索菲亚滝川ソフィアTAKIGAWA SOFIA.txt
+// npm run find -- G:\TDDOWNLOAD\种子\爱乃娜美爱乃なみNAMI AINO.txt
+// npm run find -- G:\TDDOWNLOAD\种子\愛実れい爱实丽.txt
+// npm run find -- G:\TDDOWNLOAD\种子\滨崎里绪浜崎りお森下えりか篠原絵梨香.txt
+// npm run find -- G:\TDDOWNLOAD\种子\冲田杏梨沖田杏梨観月あかねAnnri Okita.txt
+// npm run find -- G:\TDDOWNLOAD\种子\仁科百华仁科百華momoka nishina.txt
+// npm run find -- G:\TDDOWNLOAD\种子\市来美保姬野尤里姬野优里姫野ゆうり.txt
+// npm run find -- G:\TDDOWNLOAD\种子\松下紗栄子.txt
+// npm run find -- G:\TDDOWNLOAD\种子\小西悠小西まりえKONISHI YU.txt
+
+const outputDir = 'C:/Users/DELL/Desktop/新建文件夹 (3)';
 
 // 正式开始
 ask(url => {
@@ -15,9 +25,9 @@ ask(url => {
 	// 将每行链接转为对象，key 为番号，value 为链接
 	const links = txt.match(/magnet:?[^\n]+/g, '');
 	const will = links.reduce((re, link) => {
-		// 匹配 110313-691 MKBD-S60 RED-195 这几种番号
-		let name = (link.match(/\d+[\-\_]\d+/g) || link.match(/\w+[\-\_]\w*\d+/) || [])[0];
-		if (!name) throw new Error('问题链接：' + link);
+		// 匹配 110313-691 MKBD-S60 RED-195 21ID-008 这几种番号
+		let name = (link.match(/\d+[\-\_]\d+\w*/g) || link.match(/\d*\w+[\-\_]\w*\d+\w*/) || [])[0];
+		if (!name) { console.log('问题链接'.red, link); return re; }
 		name = convertName(name);
 		re[name] = link;
 		return re;
@@ -39,7 +49,7 @@ ask(url => {
 	// 开始导出
 	const output = dataToArray(result, 'link').join('');
 	const fileName = getFileName(url);
-	const outputPath = path.join('C:/Users/DELL/Desktop/', fileName);
+	const outputPath = path.join(outputDir, fileName);
 	fs.writeFileSync(outputPath, output, 'utf8');
 	console.log('已导出到桌面');
 });
