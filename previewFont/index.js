@@ -18,12 +18,44 @@ async function previewFont(input, output) {
   const cssStr = await getUrlContent(input, process.cwd());
   const cssObj = cssStrToCssObject(cssStr);
   
-  forEachDeep(cssObj, 'child', ({key, attrs, child}) => {
-    console.log(key)
-    // if (key.indexOf('@media') > -1) {
-    //   console.log(child);
-    // }
+  const fonts = [];  // 带有字体名称的集合
+  const conts = [];  // 带有 font-family 的集合
+  const icons = [];  // 带有 :before{ content: '\000f' } 的集合
+  forEachDeep(cssObj, 'child', (item) => {
+    if (item.key.indexOf('@font-face') > -1) {
+      fonts.push(item);
+    } else if (item.attrs && (item.attrs.font || item.attrs['font-family'])) {
+      conts.push(item);
+    }
+    if (item.key.includes(':before') || item.key.includes(':after')) {
+      const { content } = item.attrs || {};
+      if (/\\[0-9a-f]{4}/i.test(content)) {
+        icons.push(item);
+      }
+    }
   });
+
+  const iconfont = [];  // 含有字体名称的类名，比如 .glyphicon
+  conts.forEach(item => {
+    const fontFamily = item.attrs && (item.attrs.font || item.attrs['font-family']);
+    var inner = fonts.some(font => {
+      const fontFamily2 = font.attrs && font.attrs['font-family'];
+      return fontFamily.includes(fontFamily2);
+    })
+    if (inner) {
+      iconfont.push(item);
+    }
+  });
+
+  const result = iconfont.reduce((re, item) => {
+    const fontFamily = item.attrs && (item.attrs.font || item.attrs['font-family']);
+    re[fontFamily] = icons.reduce((res, icon) => {
+      return icon.key.includes(item.key) ? res.concat([icon]) : res;
+    }, []);
+    return re;
+  }, {});  // 获得 { 'Glyphicons Halflings': [] } 的结果
+
+  console.log(result);
 }
 
 function cssStrToCssObject(cssStr) {
@@ -55,7 +87,7 @@ function forEachDeep(obj, childKey, callback) {
         forEachDeep(item, childKey, callback);
       }
     } else {
-      callback && callback(obj ,key, item);
+      callback && callback(item, key, obj);
     }
   }
 }

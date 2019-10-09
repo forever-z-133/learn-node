@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
+require('../consoleColor');
 
 /**
  * 将文件全部重命名为 ABCadd001 格式
@@ -40,7 +41,7 @@ function rename(filePath) {
     });
 
     // 无需重命名的直接跳过
-    console.log(index, name, newName);
+    console.log(name === newName ? '同'.green : '异'.red, '   ', name.padEnd(18, ' '), newName);
     if (name === newName) return loop(++index);
 
     // 开始重命名
