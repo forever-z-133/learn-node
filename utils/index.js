@@ -90,19 +90,27 @@ function getFileName(filePath) {
   return filePath.split(/[\/\\]/).slice(-1)[0];
 }
 
-// 获取本地或远程文件的文本内容
-async function getUrlContent(url, dir) {
+// 获取可用的链接
+async function getLocalPath(url, dir = __dirname) {
   let filePath = url;
-  const isUrl = /https?:/i.test(filePath);
   const isAbsolutePath = /^[A-Z]\:/i.test(filePath);
+  const isUrl = /https?:/i.test(filePath);
   if (isUrl) {
-    filePath = path.join(__dirname, getFileName(url));
+    const tempDir = fs.realpathSync(require('os').tmpdir());
+    filePath = path.join(tempDir, getFileName(url));
     await download(url, filePath);
   } else if (isAbsolutePath) {
     filePath = filePath;
   } else {
     filePath = path.join(dir, url);
   }
+  return filePath;
+}
+
+// 获取本地或远程文件的文本内容
+async function getUrlContent(url, dir) {
+  const isUrl = /https?:/i.test(url);
+  let filePath = await getLocalPath(url, dir);
   const res = fs.readFileSync(filePath, 'utf8');
   isUrl && fs.unlinkSync(filePath); // 是远程的得删掉临时文件
   return res;
@@ -155,6 +163,7 @@ module.exports = {
   readJson,
   writeJson,
   getFileName,
+  getLocalPath,
   getUrlContent,
   addZero,
   useCache,

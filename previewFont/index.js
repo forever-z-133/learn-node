@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const { getUrlContent, typeOf } = require('../utils');
+const spawn = require('cross-spawn');
+const { getLocalPath, getUrlContent, typeOf } = require('../utils');
 
 /**
  * 有字体文件，却不知他们长什么样，于是便有了此插件来解决痛点
@@ -10,12 +11,15 @@ const { getUrlContent, typeOf } = require('../utils');
 // npm run font -- ./previewFont/bootstrap/bootstrap.css
 // npm run font -- https://cdn.bootcss.com/twitter-bootstrap/3.4.1/css/bootstrap.css
 
-previewFont(process.argv[2]);
+const input = process.argv[2];
+previewFont(input);
 
 async function previewFont(input, output) {
   if (!/\.css/i.test(input)) throw new Error('请输入 .css 格式的文件路径');
+  const cssPath = await getLocalPath(input, process.cwd());
   output = path.join(output || __dirname, 'temp');
-  const cssStr = await getUrlContent(input, process.cwd());
+  !fs.existsSync(output) && fs.mkdirSync(output);
+  const cssStr = await getUrlContent(cssPath);
   const cssObj = cssStrToCssObject(cssStr);
   
   const fonts = [];  // 带有字体名称的集合
@@ -48,16 +52,42 @@ async function previewFont(input, output) {
   });
 
   const result = iconfont.reduce((re, item) => {
-    const fontFamily = item.attrs && (item.attrs.font || item.attrs['font-family']);
+    const fontFamily = (item.key.match(/(?<=\.).+?(?=\b)/) || [])[0];
     re[fontFamily] = icons.reduce((res, icon) => {
       return icon.key.includes(item.key) ? res.concat([icon]) : res;
     }, []);
     return re;
   }, {});  // 获得 { 'Glyphicons Halflings': [] } 的结果
 
-  console.log(result);
+  const newHtmlPath = path.join(output, 'index.html');
+  renderHtml(result, newHtmlPath);
+  console.log(newHtmlPath);
+
+  spawn('cmd.exe', ['/c', `explorer ${newHtmlPath}`]);
 }
 
+// 渲染 html 模板并生成新 html
+function renderHtml(result, output) {
+  let html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+  html = html.replace('{{cssPath}}', input);
+  html = html.replace('{{iconsTemplate}}', function() {
+    let _html = '';
+    for (let fontFamily in result) {
+      const list = result[fontFamily];
+      _html += `<h1>${fontFamily}</h1>`;
+      _html += list.reduce((re, item) => {
+        const className = (item.key.match(/(?<=\.).+?(?=\:)/) || [])[0];
+        if (!className) return re;
+        return re + `<span class="${fontFamily} ${className}"></span>`;
+      }, '');
+    }
+    return _html;
+  });
+  fs.writeFileSync(output, html, 'utf8');
+  return html;
+}
+
+// css 字符串转 json 格式
 function cssStrToCssObject(cssStr) {
 	cssStr = cssStr.replace(/\s*[\t\n]\s*/g, ''); // 去掉换行
   cssStr = cssStr.replace(/\/\*.*?\*\//g, ''); // 去除注释
@@ -79,6 +109,7 @@ function cssStrToCssObject(cssStr) {
   return cssObj;
 }
 
+// 深度遍历
 function forEachDeep(obj, childKey, callback) {
   for (let key in obj) {
     const item = obj[key];
