@@ -13,7 +13,7 @@ function convertName(name) {
 // 获取已下载的番号
 function hasDownload(dirs) {
   if (typeof dirs === 'string') dirs = [dirs];
-  dirs = dirs || ['F:\下载', 'F:\下载3', 'I:\无码', 'I:\有码'];
+  dirs = dirs || ['F:\\下载', 'F:\\下载3', 'F:\\下载4', 'I:\\无码', 'I:\\有码', 'G:\\TDDOWNLOAD\\写真'];
   return dirs.reduce((re, dir) => {
     let names = fs.readdirSync(dir) || [];
     names = names.map(name => {
