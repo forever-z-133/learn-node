@@ -4,42 +4,39 @@ const { addZero, useCache } = require('./index');
 
 // 转化为可用番号
 function convertName(name) {
-	return name.replace(/(.*?)(add|\-|\_)(.*)/, (match, pre, add, next) => {
+  return name.replace(/(.*?)(add|\-|\_)(.*)/, (match, pre, add, next) => {
     if (pre.length >= 5) pre = pre.replace(/(DB|HD|BD)$/i, '');
-    return pre.toUpperCase() + 'add' + addZero(next.toUpperCase(), 3);
+    return pre.toUpperCase() + '-' + addZero(next.toUpperCase(), 3);
   });
 }
+
+// 获取文件夹里的文件转为数组
+function getFilesArray(dir) {
+  let names = fs.readdirSync(dir) || [];
+  return names.reduce((re, name) => {
+    const _dir = path.resolve(dir).replace(/\\/g, '/');
+    const url = path.resolve(dir, name).replace(/\\/g, '/');
+    const [ fileName, unit ] = name.split('.');
+    if (!fileName || !unit) { return re; }
+    return re.concat([{ name: fileName, unit: unit.toLowerCase(), url, dir: _dir }]);
+  }, []);
+}
+getFilesArray = useCache(getFilesArray);
 
 // 获取已下载的番号
 function hasDownload(dirs) {
   if (typeof dirs === 'string') dirs = [dirs];
   dirs = dirs || ['F:\\下载', 'F:\\下载3', 'F:\\下载4', 'I:\\无码', 'I:\\有码', 'G:\\TDDOWNLOAD\\写真'];
   return dirs.reduce((re, dir) => {
-    let names = fs.readdirSync(dir) || [];
-    names = names.map(name => {
-      return {
-        fileName: name.split('.')[0],
-        filePath: path.resolve(dir, name).replace(/\\/g, '/'),
-      }
-    })
-    return re.concat(names) ;
+    const items = getFilesArray(dir);
+    return re.concat(items);
   }, []);
 }
 hasDownload = useCache(hasDownload);
 
-// 从已下载中找到相应番号
-function find(name, dirs) {
-  if (!name) return null;
-	name = convertName(name);
-	const has = hasDownload(dirs);
-  return has.filter(item => {
-    return item.fileName.includes(name);
-  })[0];
-}
-
 module.exports = {
   convertName,
-  hasDownload,
-  find
+  getFilesArray,
+  hasDownload
 }
 module.exports.default = module.exports;

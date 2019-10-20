@@ -133,7 +133,7 @@ function useCache(fn) {
   }
 }
 
-// [{a:1},{a:2}], 'a' => [1,2]
+// dataToArray([{a:1},{a:2}], 'a') => [1,2]
 function dataToArray(data, key, options) {
   if (typeOf(data) !== 'array' || !data.length) return [];
   if (!key) throw new Error('第二位入参有误');
@@ -154,6 +154,18 @@ function dataToArray(data, key, options) {
   }, []);
 }
 
+// dataToObject([{id:1,x:'a'}, {id:2,x:'b'}], 'id', 'x'); // {1:'a',2:'b'}
+function dataToObject(data, keyName, valueName, options) {
+  if (typeOf(data) !== 'array' || !data.length) return [];
+  options = options || {};
+  return data.reduce(function(re, item, index) {
+    var key = keyName ? item[keyName] : index;
+    var value = valueName ? item[valueName] : item;
+    re[key] = value;
+    return re;
+  }, {});
+}
+
 module.exports = {
   typeOf,
   emptyDirSync,
@@ -167,6 +179,7 @@ module.exports = {
   getUrlContent,
   addZero,
   useCache,
-  dataToArray
+  dataToArray,
+  dataToObject
 }
 module.exports.default = module.exports;

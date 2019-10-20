@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
-const { find } = require('../utils/me');
+const { dataToArray } = require('../utils/index');
+const { convertName, hasDownload } = require('../utils/me');
 require('../consoleColor');
 
 /**
@@ -7,10 +8,15 @@ require('../consoleColor');
  */
 
 // 开始动作，递归询问并打印结果
+const has = hasDownload();
 (function loop() {
   ask((name, type) => {
-    const item = find(name);
-    item ? console.log(name, item.filePath) : console.log(name, '没找到');
+    const item = has.filter(item => item.name.includes(name));
+    if (item && item.length) {
+      console.log(name, dataToArray(item, 'url').join('\n'));
+    } else {
+      console.log(name, '没找到');
+    }
     type !== 'args' && loop();
   });
 })();

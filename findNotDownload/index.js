@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
 const { getFileName, dataToArray } = require('../utils');
-const { convertName, find } = require('../utils/me');
+const { convertName, hasDownload } = require('../utils/me');
 require('../consoleColor');
 
 // npm run find -- G:\TDDOWNLOAD\种子\吉川爱美.txt
@@ -20,10 +20,12 @@ const outputDir = 'C:/Users/DELL/Desktop/新建文件夹 (3)';
 
 // 正式开始
 ask(url => {
-	const txt = fs.readFileSync(url, "utf-8");
+	const has = hasDownload();
+	const tempHas = dataToArray(has, 'name');
 
-	// 将每行链接转为对象，key 为番号，value 为链接
-	const links = txt.match(/magnet:?[^\n]+/g, '');
+	// 读取 txt 文件，将每行链接转为对象
+	const txt = fs.readFileSync(url, "utf-8");
+	const links = txt.match(/magnet:?[^\n]+/g);
 	const will = links.reduce((re, link) => {
 		// 匹配 110313-691 MKBD-S60 RED-195 21ID-008 这几种番号
 		let name = (link.match(/\d+[\-\_]\d+\w*/g) || link.match(/\d*\w+[\-\_]\w*\d+\w*/) || [])[0];
@@ -36,7 +38,7 @@ ask(url => {
 	// 看已下载中有没有，没有则将链接存入 result 等待导出
 	let result = [];
 	for (let name in will) {
-		const item = find(name);
+		const item = tempHas.filter(n => n.includes(name))[0];
 		const link = will[name];
 		console.log(item ? '已下載'.green : '未下載'.red, name.padEnd(12, ' '), link);
 		if (item) continue;
@@ -47,10 +49,9 @@ ask(url => {
 	result = result.sort((a, b) => a.name < b.name ? -1 : 1);
 
 	// 开始导出
-	const output = dataToArray(result, 'link').join('');
-	const fileName = getFileName(url);
-	const outputPath = path.join(outputDir, fileName);
-	fs.writeFileSync(outputPath, output, 'utf8');
+	const newTxt = dataToArray(result, 'link').join('');
+	const outputPath = path.join(outputDir, getFileName(url));
+	fs.writeFileSync(outputPath, newTxt, 'utf8');
 	console.log('已导出到桌面');
 });
 

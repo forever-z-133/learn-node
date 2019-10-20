@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
+const { convertName, getFilesArray } = require('../utils/me');
 require('../consoleColor');
 
 /**
@@ -16,44 +17,39 @@ inquirer.prompt([{
 });
 // rename('I:/有码');
 
-function rename(filePath) {
-  const fileNames = fs.readdirSync(filePath, "utf-8");
-  const join = (name) => path.join(filePath, name);
+function rename(dir) {
+  dir = path.resolve(dir);
+  const filesArr = getFilesArray(dir);
+  
+  const tempSameName = {};
+  const result = filesArr.reduce((re, file) => {
+    const { name } = file;
+    const newName = convertName(name);
+    const inner = tempSameName[newName] || [];
+    if (inner && inner.length) {
+      re.has.push({ file, newName, others: inner });
+    } else if (name === newName) {
+      re.same.push({ file, newName });
+    } else {
+      re.should.push({ file, newName });
+    }
+    tempSameName[newName] = [...inner, file];
+    return re;
+  }, { has: [], same: [], should: [] });
 
-  const countTemp = {};
-  (function loop(index) {
-    var name = fileNames[index];
-    if (!name) return console.log(filePath, 'finish');
+  result.same.forEach(({ file, newName }) => {
+    const { url } = file;
+    console.log('不变'.green, newName.padEnd(12, ' '), url);
+  });
 
-    // 获得新名称
-    const newName = name.replace(/([a-zA-Z0-9]+)(add|\-)(\d+)([-_]\w|[a-zA-Z])?/, (str, pre, add, num, unit) => {
-      if (pre.length >= 5) pre = pre.replace(/(DB|HD|BD)$/i, '');
-      let newStr = pre.toUpperCase() + 'add' + addZero(num, 3);
+  result.should.forEach(({ file, newName }) => {
+    const { unit, url, dir } = file;
+    console.log('改变'.yellow, newName.padEnd(12, ' '), url);
+    fs.renameSync(url, path.join(dir, `${newName}.${unit.toLowerCase()}`));
+  });
 
-      // 没后缀的直接过
-      if (!unit) return newStr;
-
-      // 有后缀比如 _1 -0 a 等的都根据同名文件个数转为 A B
-      const count = (countTemp[newStr] || 0) + 1;
-      unit = String.fromCharCode(((count + '').codePointAt() + 16))
-      countTemp[newStr] = count;
-      return newStr + unit;
-    });
-
-    // 无需重命名的直接跳过
-    console.log(name === newName ? '同'.green : '异'.red, '   ', name.padEnd(18, ' '), newName);
-    if (name === newName) return loop(++index);
-
-    // 开始重命名
-    fs.rename(join(name), join(newName), err => {
-      if (err) throw err;
-      loop(++index);
-    });
-  })(0);
-
-  function addZero(num, len = 2) {
-    let numLen = (num + '').length;
-    while (numLen++ < len) num = '0' + num;
-    return num + '';
-  }
+  result.has.forEach(({ file, newName, others = [] }) => {
+    const { url } = file;
+    console.log('同名'.red, newName.padEnd(12, ' '), url, others.map(file => file.url).join(' '));
+  });
 }
