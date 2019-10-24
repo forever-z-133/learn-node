@@ -11,9 +11,11 @@ require('../consoleColor');
 const has = hasDownload();
 (function loop() {
   ask((name, type) => {
-    const item = has.filter(item => item.name.includes(name));
+    const item = has.filter(item => {
+      return item.name.includes(name) || item.name.toLowerCase().includes(name)
+    });
     if (item && item.length) {
-      console.log(name, dataToArray(item, 'url').join('\n'));
+      console.log(dataToArray(item, 'url').join('\n'));
     } else {
       console.log(name, '没找到');
     }

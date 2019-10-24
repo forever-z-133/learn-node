@@ -15,11 +15,18 @@ require('../consoleColor');
 // npm run find -- G:\TDDOWNLOAD\种子\市来美保姬野尤里姬野优里姫野ゆうり.txt
 // npm run find -- G:\TDDOWNLOAD\种子\松下紗栄子.txt
 // npm run find -- G:\TDDOWNLOAD\种子\小西悠小西まりえKONISHI YU.txt
+// npm run find -- G:\TDDOWNLOAD\种子\朝桐光南野灯南野あかりAKARI MINAMINO.txt
+// npm run find -- G:\TDDOWNLOAD\种子\董美香すみれ美香SUMIRE MIKA.txt
+// npm run find -- G:\TDDOWNLOAD\种子\京香julia.txt
+// npm run find -- G:\TDDOWNLOAD\种子\上原保奈美うえはらほなみHonami Uehara.txt
+// npm run find -- G:\TDDOWNLOAD\种子\桐原绘里香 桐原エリカErika Kirihara.txt
 
 const outputDir = 'C:/Users/DELL/Desktop/新建文件夹 (3)';
 
 // 正式开始
 ask(url => {
+	const outputPath = path.join(outputDir, getFileName(url));
+
 	const has = hasDownload();
 	const tempHas = dataToArray(has, 'name');
 
@@ -45,14 +52,18 @@ ask(url => {
 		result.push({ name, link });
 	}
 
+	if (result.length < 1) {
+		fs.existsSync(outputPath) && fs.unlinkSync(outputPath);
+		return console.log('全部已下载');
+	}
+
 	// 排个序，A 在前
 	result = result.sort((a, b) => a.name < b.name ? -1 : 1);
 
 	// 开始导出
 	const newTxt = dataToArray(result, 'link').join('');
-	const outputPath = path.join(outputDir, getFileName(url));
 	fs.writeFileSync(outputPath, newTxt, 'utf8');
-	console.log('已导出到桌面');
+	console.log('已导出到桌面，还有 ' + result.length + '个未下载');
 });
 
 // 获取 txt 文件路径
