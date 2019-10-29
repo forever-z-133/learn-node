@@ -4,6 +4,7 @@ const { addZero, useCache } = require('./index');
 
 // 转化为可用番号
 function convertName(name) {
+  if (!name) return '';
   return name.replace(/(.*?)(add|\-|\_)(.*)/, (match, pre, add, next) => {
     if (pre.length >= 5) pre = pre.replace(/(DB|HD|BD)$/i, '');
     return pre.toUpperCase() + '-' + addZero(next.toUpperCase(), 3);
