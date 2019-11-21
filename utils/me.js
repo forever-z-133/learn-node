@@ -7,6 +7,7 @@ function convertName(name) {
   if (!name) return '';
   return name.replace(/(.*?)(add|\-|\_)(.*)/, (match, pre, add, next) => {
     if (pre.length >= 5) pre = pre.replace(/(DB|HD|BD)$/i, '');
+    next = next.replace(/un$/i, '');
     return pre.toUpperCase() + '-' + addZero(next.toUpperCase(), 3);
   });
 }
@@ -27,7 +28,7 @@ getFilesArray = useCache(getFilesArray);
 // 获取已下载的番号
 function hasDownload(dirs) {
   if (typeof dirs === 'string') dirs = [dirs];
-  dirs = dirs || ['F:\\下载', 'F:\\下载3', 'F:\\下载过', 'I:\\无码', 'I:\\有码', 'G:\\TDDOWNLOAD\\写真'];
+  dirs = dirs || ['F:\\下载', 'F:\\下载3', 'I:\\下载过', 'I:\\无码', 'I:\\有码', 'G:\\TDDOWNLOAD\\写真'];
   return dirs.reduce((re, dir) => {
     const items = getFilesArray(dir);
     return re.concat(items);

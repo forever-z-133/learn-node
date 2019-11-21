@@ -12,7 +12,7 @@ require('../consoleColor');
  * 2. 批量处理某文件夹，使其全部完成上述操作
 */
 
-const outputPath = 'F:/下载过';
+const outputPath = 'I:/下载过';
 const has = hasDownload();
 
 const args = process.argv.slice(2);

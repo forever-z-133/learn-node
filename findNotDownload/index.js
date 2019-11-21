@@ -5,24 +5,24 @@ const { getFileName, dataToArray } = require('../utils');
 const { convertName, hasDownload } = require('../utils/me');
 require('../consoleColor');
 
-// npm run find -- G:\TDDOWNLOAD\种子\吉川爱美.txt
-// npm run find -- G:\TDDOWNLOAD\种子\泷川索菲亚滝川ソフィアTAKIGAWA SOFIA.txt
-// npm run find -- G:\TDDOWNLOAD\种子\爱乃娜美爱乃なみNAMI AINO.txt
-// npm run find -- G:\TDDOWNLOAD\种子\愛実れい爱实丽.txt
-// npm run find -- G:\TDDOWNLOAD\种子\滨崎里绪浜崎りお森下えりか篠原絵梨香.txt
-// npm run find -- G:\TDDOWNLOAD\种子\冲田杏梨沖田杏梨観月あかねAnnri Okita.txt
-// npm run find -- G:\TDDOWNLOAD\种子\仁科百华仁科百華momoka nishina.txt
-// npm run find -- G:\TDDOWNLOAD\种子\市来美保姬野尤里姬野优里姫野ゆうり.txt
-// npm run find -- G:\TDDOWNLOAD\种子\松下紗栄子.txt
-// npm run find -- G:\TDDOWNLOAD\种子\小西悠小西まりえKONISHI YU.txt
-// npm run find -- G:\TDDOWNLOAD\种子\朝桐光南野灯南野あかりAKARI MINAMINO.txt
-// npm run find -- G:\TDDOWNLOAD\种子\董美香すみれ美香SUMIRE MIKA.txt
-// npm run find -- G:\TDDOWNLOAD\种子\京香julia.txt
-// npm run find -- G:\TDDOWNLOAD\种子\上原保奈美うえはらほなみHonami Uehara.txt
-// npm run find -- G:\TDDOWNLOAD\种子\桐原绘里香 桐原エリカErika Kirihara.txt
-// npm run find -- G:\TDDOWNLOAD\种子\里中结衣菅野みいなMiina Kanno.txt
+// npm run find -- G:\TDDOWNLOAD\种子\吉川爱美.txt  9
+// npm run find -- G:\TDDOWNLOAD\种子\泷川索菲亚滝川ソフィアTAKIGAWA SOFIA.txt  5
+// npm run find -- G:\TDDOWNLOAD\种子\爱乃娜美爱乃なみNAMI AINO.txt  30
+// npm run find -- G:\TDDOWNLOAD\种子\愛実れい爱实丽.txt  16
+// npm run find -- G:\TDDOWNLOAD\种子\滨崎里绪浜崎りお森下えりか篠原絵梨香.txt  102
+// npm run find -- G:\TDDOWNLOAD\种子\冲田杏梨沖田杏梨観月あかねAnnri Okita.txt  2
+// npm run find -- G:\TDDOWNLOAD\种子\仁科百华仁科百華momoka nishina.txt  44
+// npm run find -- G:\TDDOWNLOAD\种子\市来美保姬野尤里姬野优里姫野ゆうり.txt  21
+// npm run find -- G:\TDDOWNLOAD\种子\松下紗栄子.txt  0
+// npm run find -- G:\TDDOWNLOAD\种子\小西悠小西まりえKONISHI YU.txt  35
+// npm run find -- G:\TDDOWNLOAD\种子\朝桐光南野灯南野あかりAKARI MINAMINO.txt  119
+// npm run find -- G:\TDDOWNLOAD\种子\董美香すみれ美香SUMIRE MIKA.txt  1
+// npm run find -- G:\TDDOWNLOAD\种子\京香julia.txt  83
+// npm run find -- G:\TDDOWNLOAD\种子\上原保奈美うえはらほなみHonami Uehara.txt  75
+// npm run find -- G:\TDDOWNLOAD\种子\桐原绘里香 桐原エリカErika Kirihara.txt  30
+// npm run find -- G:\TDDOWNLOAD\种子\里中结衣菅野みいなMiina Kanno.txt  3
 
-const outputDir = 'C:/Users/DELL/Desktop/新建文件夹 (3)';
+const outputDir = 'C:/Users/DELL/Desktop/新建文件夹';
 
 // 正式开始
 ask(url => {
