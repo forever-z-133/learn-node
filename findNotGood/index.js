@@ -39,6 +39,7 @@ const excludeList = [];
     excludeList.push(path);
     removeFile(path);
   } else if (method === "create") {
+    excludeList.push(path);
     createFile(path);
   }
   await loop();
@@ -60,10 +61,15 @@ function getChoicesList(exclude) {
   }, []);
 
   // 是否已新建过
-  const alreadyHasTxt = hasTxtList.some(({ name: n }) => {
-    return n === name || n.toLowerCase === name;
+  let alreadyHasTxt = hasTxtList.some(({ name: n, url }) => {
+    const name2 = convertName(name);
+    return n === name2 || n.toLowerCase === name2;
   });
-  alreadyHasTxt && console.log(`------ 已存在 ${txtPath.green} 无需新建\n`);
+  if (exclude.includes(txtPath)) {
+    alreadyHasTxt = true;
+  } else {
+    alreadyHasTxt && console.log(`------ 已存在 ${txtPath.green} 无需新建\n`);
+  }
 
   // 要新建的
   let createList = !alreadyHasTxt && {
@@ -91,7 +97,7 @@ async function ask(choices) {
 
 // txt 的目标路径
 function getTxtPath(name) {
-  return path.join(outputPath, name + ".txt").replace(/\\/g, "/");
+  return path.join(outputPath, convertName(name) + ".txt").replace(/\\/g, "/");
 }
 
 // 删除文件
