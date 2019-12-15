@@ -18,8 +18,8 @@ function getFilesArray(dir) {
   return names.reduce((re, name) => {
     const _dir = path.resolve(dir).replace(/\\/g, '/');
     const url = path.resolve(dir, name).replace(/\\/g, '/');
-    const [ fileName, unit ] = name.split('.');
-    if (!fileName || !unit) { return re; }
+    const [fileName, unit] = name.split('.');
+    if (!fileName || !unit) return re;
     return re.concat([{ name: fileName, unit: unit.toLowerCase(), url, dir: _dir }]);
   }, []);
 }
@@ -28,7 +28,14 @@ getFilesArray = useCache(getFilesArray);
 // 获取已下载的番号
 function hasDownload(dirs) {
   if (typeof dirs === 'string') dirs = [dirs];
-  dirs = dirs || ['F:\\下载', 'F:\\下载3', 'I:\\下载过', 'I:\\无码', 'I:\\有码', 'G:\\TDDOWNLOAD\\写真'];
+  dirs = dirs || [
+    'F:\\下载',
+    'F:\\下载3',
+    'I:\\下载过',
+    'I:\\无码',
+    'I:\\有码',
+    'G:\\TDDOWNLOAD\\写真'
+  ];
   return dirs.reduce((re, dir) => {
     const items = getFilesArray(dir);
     return re.concat(items);
@@ -40,5 +47,5 @@ module.exports = {
   convertName,
   getFilesArray,
   hasDownload
-}
+};
 module.exports.default = module.exports;

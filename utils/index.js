@@ -1,10 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
 
 // 类型判断
 function typeOf(obj) {
-  var typeStr = Object.prototype.toString.call(obj).split(" ")[1];
+  const typeStr = Object.prototype.toString.call(obj).split(' ')[1];
   return typeStr.substr(0, typeStr.length - 1).toLowerCase();
 }
 
@@ -12,12 +11,12 @@ function typeOf(obj) {
 function emptyDirSync(dir) {
   const files = [];
   try {
-    files = fs.readdirSync(dir)
+    files = fs.readdirSync(dir);
   } catch (err) {
-    return mkdir.mkdirsSync(dir)
+    return mkdir.mkdirsSync(dir);
   }
   files.forEach(file => {
-    let url = dir + "/" + file;
+    let url = dir + '/' + file;
     if (fs.statSync(url).isDirectory()) {
       emptyDirSync(url); // 递归删除文件夹
       fs.rmdirSync(url);
@@ -38,10 +37,18 @@ function makeDirSync(dir) {
   !fs.existsSync(dir) && fs.mkdirSync(dir);
 }
 
+// 获取链接类型
+function fileNetType(url) {
+  if (/^https/.test(url)) return 'https';
+  if (/^http/.test(url)) return 'http';
+  return 'file';
+}
+
 // 下载文件
 function _download(url, output, fileName, callback) {
   if (typeof fileName === 'function') {
-    callback = fileName; fileName = null
+    callback = fileName;
+    fileName = null;
   }
   fileName = fileName || getFileName(url);
   if (!fileName) throw new Error('没找到文件名');
@@ -50,8 +57,8 @@ function _download(url, output, fileName, callback) {
     filePath = path.join(output, fileName);
   }
   const stream = fs.createWriteStream(filePath);
-  https.get(url, (res) => {
-    res.on('data', (chunk) => {
+  ajax(url, 'get', res => {
+    res.on('data', chunk => {
       stream.write(chunk);
     });
     res.on('end', () => {
@@ -64,7 +71,7 @@ const download = function(url, output, fileName) {
   return new Promise(resolve => {
     _download(url, output, fileName, resolve);
   });
-}
+};
 
 // 读 json
 function readJson(url) {
@@ -73,7 +80,9 @@ function readJson(url) {
   let str = fs.readFileSync(url, 'utf8');
   try {
     return JSON.parse(str);
-  } catch(e) { throw e; }
+  } catch (e) {
+    throw e;
+  }
 }
 
 // 写 json
@@ -82,38 +91,21 @@ function writeJson(url, data) {
   try {
     var str = JSON.stringify(data);
     fs.writeFileSync(url, str);
-  } catch(e) { throw e; }
+  } catch (e) {
+    throw e;
+  }
 }
 
 // 获取文本名（不妙）
 function getFileName(filePath) {
   return filePath.split(/[\/\\]/).slice(-1)[0];
+  // return filePath.slice(filePath.lastIndexOf('/') + 1);
 }
 
-// 获取可用的链接
-async function getLocalPath(url, dir = __dirname) {
-  let filePath = url;
-  const isAbsolutePath = /^[A-Z]\:/i.test(filePath);
-  const isUrl = /https?:/i.test(filePath);
-  if (isUrl) {
-    const tempDir = fs.realpathSync(require('os').tmpdir());
-    filePath = path.join(tempDir, getFileName(url));
-    await download(url, filePath);
-  } else if (isAbsolutePath) {
-    filePath = filePath;
-  } else {
-    filePath = path.join(dir, url);
-  }
-  return filePath;
-}
-
-// 获取本地或远程文件的文本内容
-async function getUrlContent(url, dir) {
-  const isUrl = /https?:/i.test(url);
-  let filePath = await getLocalPath(url, dir);
-  const res = fs.readFileSync(filePath, 'utf8');
-  isUrl && fs.unlinkSync(filePath); // 是远程的得删掉临时文件
-  return res;
+function ajax(url, method = 'get', callback) {
+  const netType = fileNetType(url);
+  const ajax = netType === 'https' ? require('https') : require('http');
+  return ajax[method](url, callback);
 }
 
 // 补零
@@ -123,14 +115,37 @@ function addZero(num, len = 2) {
   return num + '';
 }
 
+// 读取文件(本地&网络)
+function readFile(url, callback) {
+  return new Promise(resolve => {
+    const netType = fileNetType(url);
+    if (netType === 'https' || netType === 'http') {
+      ajax = netType === 'https' ? require('https') : require('http');
+      ajax.get(url, res => {
+        let body = '';
+        res.on('data', chunk => (body += chunk));
+        res.on('end', () => {
+          const result = body.toString('utf8');
+          callback && callback(result);
+          resolve(result);
+        });
+      });
+    } else {
+      const result = fs.readFileSync(url).toString('utf8');
+      callback && callback(result);
+      resolve(result);
+    }
+  });
+}
+
 // 使用函数结果缓存
 function useCache(fn) {
   var cache = {};
-  return function(){
-    var key = arguments.length + Array.prototype.join.call(arguments, ",");
+  return function() {
+    var key = arguments.length + Array.prototype.join.call(arguments, ',');
     if (key in cache) return cache[key];
-    else return cache[key] = fn.apply(this, arguments);
-  }
+    else return (cache[key] = fn.apply(this, arguments));
+  };
 }
 
 // dataToArray([{a:1},{a:2}], 'a') => [1,2]
@@ -142,7 +157,7 @@ function dataToArray(data, key, options) {
   var noEmpty = options.noEmpty || false; // 排除值为空的
   var deepKey = options.deepKey || ''; // 按某 key 向下递归
 
-  return data.reduce(function (re, item) {
+  return data.reduce(function(re, item) {
     var value = item[key],
       deep = [];
     if (noEmpty && value == undefined) return re;
@@ -166,20 +181,85 @@ function dataToObject(data, keyName, valueName, options) {
   }, {});
 }
 
+// a=1&b=2 转为 {a:1,b:2}
+function stringToObject(str, divide, concat) {
+  if (!str || typeof str !== 'string') return {};
+  divide = divide || '&';
+  concat = concat || '=';
+  var arr = str.split(divide);
+  return arr.reduce(function(re, item) {
+    if (!item) return re;
+    var temp = item.split(concat);
+    var key = temp.shift().trim();
+    var value = temp.join(concat).trim();
+    if (!key) return re;
+    if (['null', 'undefined'].indexOf(value) > -1) value = undefined;
+    if (value === 'true') value = true;
+    if (value === 'false') value = false;
+    re[key] = value;
+    return re;
+  }, {});
+}
+
+// 异步循环
+function forEachAsync(data, func, options) {
+  options = options || {};
+  const timesConfig = Math.min(options.number || 5, 8); // 最大线程数
+  const total = data.length - 1;
+  const result = [];
+
+  let restQueue = timesConfig; // 剩余队列数
+  let started = 0; // 已发起
+  let loaded = 0; // 已完成
+  (function loop(index) {
+    const item = data[index];
+    if (!item) return;
+    func(index, item, res => {
+      restQueue++;
+      result[index] = res;
+      if (++loaded > total) return finish(result);
+      loop(++started);
+    });
+    if (--restQueue > 0) loop(++started);
+  })(0);
+
+  // 全部运行完成
+  function finish(result) {
+    options.finish && options.finish(result);
+  }
+}
+
+// 深度遍历
+function forEachDeep(obj, childKey, callback) {
+  for (let key in obj) {
+    const item = obj[key];
+    if (key === childKey && item) {
+      if (Array.isArray(item) || typeOf(child) === 'object') {
+        forEachDeep(item, childKey, callback);
+      }
+    } else {
+      callback && callback(item, key, obj);
+    }
+  }
+}
+
 module.exports = {
   typeOf,
   emptyDirSync,
   removeDirSync,
   makeDirSync,
+  fileNetType,
   download,
   readJson,
   writeJson,
   getFileName,
-  getLocalPath,
-  getUrlContent,
+  readFile,
   addZero,
   useCache,
   dataToArray,
-  dataToObject
-}
+  dataToObject,
+  stringToObject,
+  forEachAsync,
+  forEachDeep
+};
 module.exports.default = module.exports;

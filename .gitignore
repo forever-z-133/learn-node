@@ -1,9 +1,8 @@
 ## 临时文件
-m3u8ToMp4/temp
-m3u8ToMp4/new.ts
-json/temp.json
-badge/img.jpg
-previewFont/temp
+test/m3u8ToMp4/temp
+test/m3u8ToMp4/new.ts
+test/json/temp.json
+test/previewFont/temp
 
 ## npm 相关
 node_modules

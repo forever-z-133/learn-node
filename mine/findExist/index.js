@@ -1,7 +1,7 @@
 const inquirer = require('inquirer');
-const { dataToArray } = require('../utils/index');
-const { convertName, hasDownload } = require('../utils/me');
-require('../consoleColor');
+const { dataToArray } = require('../../utils/index');
+const { hasDownload } = require('../../utils/me');
+require('../../test/consoleColor');
 
 /**
  * 看我电脑上是否存在这部影片

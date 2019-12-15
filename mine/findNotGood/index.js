@@ -1,9 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 const inquirer = require("inquirer");
-const { makeDirSync, getFileName } = require("../utils/index");
-const { hasDownload, convertName } = require("../utils/me");
-require("../consoleColor");
+const { makeDirSync } = require("../../utils/index");
+const { hasDownload, convertName } = require("../../utils/me");
+require('../../test/consoleColor');
 
 /**
  * 有些影片不好看，或损坏严重又暂无法替代，占用了较多内存
