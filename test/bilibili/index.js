@@ -13,20 +13,22 @@ const axios = require('axios');
 
 // 拿收藏夹内容
 // https://api.bilibili.com/medialist/gateway/base/spaceDetail?media_id=55504663&pn=1&ps=20&keyword=&order=mtime&type=0&tid=0&jsonp=jsonp
-axios.get('https://api.bilibili.com/medialist/gateway/base/spaceDetail', {
-  params: {
-    pn: 1,
-    ps: 20,
-    keyword: '',
-    order: 'mtime',
-    type: 0,
-    tid: 0,
-    jsonp: 'jsonp',
-    media_id: '55504663'
-  }
-}).then(res => {
-  // res.on('data', (d) => {
-  //   process.stdout.write(d);
-  // });
-  console.log(res.data);
-})
+axios
+  .get('https://api.bilibili.com/medialist/gateway/base/spaceDetail', {
+    params: {
+      pn: 1,
+      ps: 20,
+      keyword: '',
+      order: 'mtime',
+      type: 0,
+      tid: 0,
+      jsonp: 'jsonp',
+      media_id: '55504663'
+    }
+  })
+  .then(res => {
+    // res.on('data', (d) => {
+    //   process.stdout.write(d);
+    // });
+    console.log(res.data);
+  });

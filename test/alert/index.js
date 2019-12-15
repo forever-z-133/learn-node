@@ -1,8 +1,5 @@
 const inquirer = require('inquirer');
-const {
-  exec,
-  spawn
-} = require('child_process');
+const { exec, spawn } = require('child_process');
 
 const [txt = 'hello', title = 'title'] = process.argv.slice(2);
 
@@ -24,24 +21,31 @@ const [txt = 'hello', title = 'title'] = process.argv.slice(2);
 
 // 选择哪种弹窗
 async function chooseType() {
-  const answer = await inquirer.prompt([{
-    type: 'list',
-    name: 'type',
-    message: '选择弹窗形式',
-    choices: [{
-      name: 'VB 脚本',
-      value: 'vb'
-    }, {
-      name: 'ActiveXObject',
-      value: 'axo'
-    }, {
-      name: 'msg.exe',
-      value: 'msg'
-    }, {
-      name: 'Electron',
-      value: 'et'
-    }]
-  }]);
+  const answer = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'type',
+      message: '选择弹窗形式',
+      choices: [
+        {
+          name: 'VB 脚本',
+          value: 'vb'
+        },
+        {
+          name: 'ActiveXObject',
+          value: 'axo'
+        },
+        {
+          name: 'msg.exe',
+          value: 'msg'
+        },
+        {
+          name: 'Electron',
+          value: 'et'
+        }
+      ]
+    }
+  ]);
   return answer.type;
 }
 
@@ -64,11 +68,9 @@ function axoAlert(txt, title) {
 
 // msg.exe 的弹窗，有的系统没有此方法
 function msgAlert(txt, title) {
-  exec(`msg * "${txt}"`);  // 没办法设标题
+  exec(`msg * "${txt}"`); // 没办法设标题
   // spawn('cmd.exe', ['/c', `msg * "${txt}"`]);
 }
 
 // Electron 的弹窗，体积较大
-function etAlert(txt, title) {
-
-}
+function etAlert(txt, title) {}

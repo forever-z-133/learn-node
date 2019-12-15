@@ -1,8 +1,8 @@
-const fs = require("fs");
-const path = require("path");
-const inquirer = require("inquirer");
-const { makeDirSync } = require("../../utils/index");
-const { hasDownload, convertName } = require("../../utils/me");
+const fs = require('fs');
+const path = require('path');
+const inquirer = require('inquirer');
+const { makeDirSync } = require('../../utils/index');
+const { hasDownload, convertName } = require('../../utils/me');
 require('../../test/consoleColor');
 
 /**
@@ -12,7 +12,7 @@ require('../../test/consoleColor');
  * 2. 批量处理某文件夹，使其全部完成上述操作
  */
 
-const outputPath = "I:/下载过";
+const outputPath = 'I:/下载过';
 makeDirSync(outputPath);
 
 const args = process.argv.slice(2);
@@ -32,13 +32,13 @@ const excludeList = [];
   const choices = getChoicesList(excludeList);
 
   const choose = await ask(choices);
-  if (choose === "cancel") process.exit(0);
+  if (choose === 'cancel') process.exit(0);
 
-  const [method, path] = choose.split(" ");
-  if (method === "remove") {
+  const [method, path] = choose.split(' ');
+  if (method === 'remove') {
     excludeList.push(path);
     removeFile(path);
-  } else if (method === "create") {
+  } else if (method === 'create') {
     excludeList.push(path);
     createFile(path);
   }
@@ -54,7 +54,7 @@ function getChoicesList(exclude) {
     if (exclude.includes(url)) return re;
     return re.concat([
       {
-        name: `${"删除".red}：${url}`,
+        name: `${'删除'.red}：${url}`,
         value: `remove ${url}`
       }
     ]);
@@ -73,20 +73,20 @@ function getChoicesList(exclude) {
 
   // 要新建的
   let createList = !alreadyHasTxt && {
-    name: `${"新建".green}：${txtPath}`,
+    name: `${'新建'.green}：${txtPath}`,
     value: `create ${txtPath}`
   };
   createList = createList ? [createList] : [];
 
-  return [...removeList, ...createList, { label: "退出", value: "cancel" }];
+  return [...removeList, ...createList, { label: '退出', value: 'cancel' }];
 }
 
 // 询问
 async function ask(choices) {
   const result = await inquirer.prompt([
     {
-      type: "list",
-      name: "choose",
+      type: 'list',
+      name: 'choose',
       choices,
       message: `（${name}）`
     }
@@ -97,7 +97,7 @@ async function ask(choices) {
 
 // txt 的目标路径
 function getTxtPath(name) {
-  return path.join(outputPath, convertName(name) + ".txt").replace(/\\/g, "/");
+  return path.join(outputPath, convertName(name) + '.txt').replace(/\\/g, '/');
 }
 
 // 删除文件
@@ -110,7 +110,7 @@ function removeFile(path) {
 
 // 新建文件
 function createFile(path) {
-  fs.writeFileSync(path, "", "utf8");
+  fs.writeFileSync(path, '', 'utf8');
   console.clear();
   console.log(`------------ ${path} 新建成功\n`);
 }

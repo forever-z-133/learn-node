@@ -8,14 +8,14 @@ const sleep = util.promisify((delay, next) => setTimeout(next, delay));
     output: process.stdout
   });
 
-  const questionAsync = (txt) => {
+  const questionAsync = txt => {
     return new Promise(resolve => {
       rl.question(txt, resolve);
     });
-  }
+  };
 
   const answer = await questionAsync('确定开始跑进度吗？(Y/N)');
-  const isYes = answer === '' || /y(es)?/i.test(answer)
+  const isYes = answer === '' || /y(es)?/i.test(answer);
   if (!isYes) {
     rl.write('\033[2J');
     return process.exit(0);
@@ -29,7 +29,7 @@ const sleep = util.promisify((delay, next) => setTimeout(next, delay));
     await sleep(1e2);
     readline.cursorTo(process.stdout, 0);
     readline.clearLine(process.stdout, 0);
-    rl.write('loading... ' + Math.ceil(index/max*100) + '%');
+    rl.write('loading... ' + Math.ceil((index / max) * 100) + '%');
     loop(++index, max);
   })(0, 10);
 
