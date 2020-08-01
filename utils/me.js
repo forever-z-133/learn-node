@@ -2,6 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const { addZero, useCache } = require('./index');
 
+// 获取链接中的番号
+// 匹配 110313-691 MKBD-S60 RED-195 21ID-008 这几种番号
+function matchName(link) {
+  return (link.match(/\d+[\-\_]\d{3,}\w*/) || link.match(/\d*\w+[\-\_]\w?\d{2,}[a-eA-E]?/) || [])[0];
+}
+
 // 转化为可用番号
 function convertName(name) {
   if (!name) return '';
@@ -30,6 +36,7 @@ function hasDownload(dirs) {
   if (typeof dirs === 'string') dirs = [dirs];
   dirs = dirs || [
     'F:\\下载',
+    'F:\\下载2',
     'F:\\下载3',
     'I:\\下载过',
     'I:\\无码',
@@ -44,6 +51,7 @@ function hasDownload(dirs) {
 hasDownload = useCache(hasDownload);
 
 module.exports = {
+  matchName,
   convertName,
   getFilesArray,
   hasDownload

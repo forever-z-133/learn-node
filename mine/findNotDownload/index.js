@@ -1,121 +1,104 @@
 const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
-const { getFileName, dataToArray, forEachAsync } = require('../../utils');
-const { convertName, hasDownload } = require('../../utils/me');
+const { getFileName, dataToArray, forEachAsync, removeDirSync } = require('../../utils');
+const { matchName, convertName, hasDownload } = require('../../utils/me');
 require('../../test/consoleColor');
+const config = require('./config');
 
-// npm run find -- G:\TDDOWNLOAD\种子\吉川爱美.txt
-// npm run find -- G:\TDDOWNLOAD\种子\泷川索菲亚滝川ソフィアTAKIGAWA SOFIA.txt
-// npm run find -- G:\TDDOWNLOAD\种子\爱乃娜美爱乃なみNAMI AINO.txt
-// npm run find -- G:\TDDOWNLOAD\种子\滨崎里绪浜崎りお森下えりか篠原絵梨香.txt
-// npm run find -- G:\TDDOWNLOAD\种子\冲田杏梨沖田杏梨観月あかねAnnri Okita.txt
-// npm run find -- G:\TDDOWNLOAD\种子\仁科百华仁科百華momoka nishina.txt
-// npm run find -- G:\TDDOWNLOAD\种子\市来美保姬野尤里姬野优里姫野ゆうり.txt
-// npm run find -- G:\TDDOWNLOAD\种子\小西悠小西まりえKONISHI YU.txt
-// npm run find -- G:\TDDOWNLOAD\种子\朝桐光南野灯南野あかりAKARI MINAMINO.txt
-// npm run find -- G:\TDDOWNLOAD\种子\董美香すみれ美香SUMIRE MIKA.txt
-// npm run find -- G:\TDDOWNLOAD\种子\京香julia.txt
-// npm run find -- G:\TDDOWNLOAD\种子\愛実れい爱实丽.txt
-// npm run find -- G:\TDDOWNLOAD\种子\上原保奈美うえはらほなみHonami Uehara.txt
-// npm run find -- G:\TDDOWNLOAD\种子\桐原绘里香 桐原エリカErika Kirihara.txt
-// npm run find -- G:\TDDOWNLOAD\种子\里中结衣菅野みいなMiina Kanno.txt
+const has = hasDownload(); // 已下载的番号集合 [{ name, unit, url, dir }]
+const tempHas = dataToArray(has, 'name'); // 已下载的番号 [name]
 
-const outputDir = 'C:/Users/DELL/Desktop/新建文件夹';
-
+/// 主程序
 const input = process.argv.slice(2).join(' ');
 if (input === 'all') {
-  const list = [
-    'G:/TDDOWNLOAD/种子/吉川爱美.txt',
-    'G:/TDDOWNLOAD/种子/泷川索菲亚滝川ソフィアTAKIGAWA SOFIA.txt',
-    'G:/TDDOWNLOAD/种子/爱乃娜美爱乃なみNAMI AINO.txt',
-    'G:/TDDOWNLOAD/种子/滨崎里绪浜崎りお森下えりか篠原絵梨香.txt',
-    'G:/TDDOWNLOAD/种子/冲田杏梨沖田杏梨観月あかねAnnri Okita.txt',
-    'G:/TDDOWNLOAD/种子/仁科百华仁科百華momoka nishina.txt',
-    'G:/TDDOWNLOAD/种子/朝桐光南野灯南野あかりAKARI MINAMINO.txt',
-    'G:/TDDOWNLOAD/种子/京香julia.txt'
-    // 'G:/TDDOWNLOAD/种子/里中结衣菅野みいなMiina Kanno.txt',
-    // 'G:/TDDOWNLOAD/种子/市来美保姬野尤里姬野优里姫野ゆうり.txt',
-    // 'G:/TDDOWNLOAD/种子/董美香すみれ美香SUMIRE MIKA.txt',
-    // 'G:/TDDOWNLOAD/种子/愛実れい爱实丽.txt',
-    // 'G:/TDDOWNLOAD/种子/小西悠小西まりえKONISHI YU.txt',
-    // 'G:/TDDOWNLOAD/种子/上原保奈美うえはらほなみHonami Uehara.txt',
-    // 'G:/TDDOWNLOAD/种子/桐原绘里香 桐原エリカErika Kirihara.txt',
-  ];
+  const list = config.map((v) => v.path);
   forEachAsync(list, (i, url, next) => findNotDownload(url, next), {
-    finish: res => list.forEach((url, i) => console.log(`${url.yellow} 还有 ${res[i].toString().red} 个没下载`))
+    finish: (resArr) => resArr.forEach(controller),
   });
 } else if (input) {
-  findNotDownload(input);
+  findNotDownload(input, controller);
 } else {
-  ask(findNotDownload);
+  ask((entry) => {
+    findNotDownload(entry, controller);
+  });
 }
 
-// 正式开始
-function findNotDownload(url, callback) {
-  const outputPath = path.join(outputDir, getFileName(url));
+/// 获取下载情况后进行打印和缓存
+function controller(res) {
+  const { entry, doneArray, unDoneArray, errerLinks } = res;
+  // 打印未下载的番号
+  unDoneArray.forEach(({ name, link }) => {
+    console.log(`${'未下载'.red}：${link}`);
+  });
+  // 打印结果
+  if (unDoneArray.length < 1) console.log('此女优的番号都下载过了');
+  else console.log(`${entry.blue} 还有 ${unDoneArray.length} 个番号未下载`);
+  // 备份一个 txt 到桌面
+  saveUnDoneAsTxt(entry, unDoneArray);
+  // 修改 config 中的未下载数
+  refreshUnDoneNumber(entry, unDoneArray.length);
+}
 
-  const has = hasDownload();
-  const tempHas = dataToArray(has, 'name');
+/// 获取下载情况
+function findNotDownload(entry, callback) {
+  // 读取源 txt 文件，将每行链接转为对象
+  const txt = fs.readFileSync(entry, 'utf-8');
+  const links = txt.match(/magnet:\?[^\n]+/g);
+  let doneArray = [];
+  let unDoneArray = [];
+  let errerLinks = [];
 
-  // 读取 txt 文件，将每行链接转为对象
-  const txt = fs.readFileSync(url, 'utf-8');
-  const links = txt.match(/magnet:?[^\n]+/g);
-  const errerLinks = [];
+  // 获取需要下载的番号，错误番号放 errerLinks
   const will = links.reduce((re, link) => {
-    // 匹配 110313-691 MKBD-S60 RED-195 21ID-008 这几种番号
-    let name = (link.match(/\d+[\-\_]\d{3,}\w*/) ||
-      link.match(/\d*\w+[\-\_]\w?\d{2,}[a-eA-E]?/) ||
-      [])[0];
+    let name = matchName(link);
     name = convertName(name);
-    if (!name || re[name]) {
-      errerLinks.push(link);
-      return re;
-    }
-    re[name] = link;
+    if (!name || re[name]) errerLinks.push({ name, link });
+    else re[name] = link;
     return re;
   }, {});
 
-  // 看已下载中有没有，没有则将链接存入 result 等待导出
-  let result = [];
+  // 看已下载的中是否包含，包含表示已下载放在 doneArray，反之 unDoneArray
   for (let name in will) {
-    const item = tempHas.filter(n => n.includes(name))[0];
+    const item = tempHas.filter((n) => n.includes(name))[0];
     const link = will[name];
-    console.log(item ? '已下載'.green : '未下載'.red, name.padEnd(12, ' '), link);
-    if (item) continue;
-    result.push({ name, link });
-  }
-
-  errerLinks.forEach(link => {
-    console.log('问题链接/重名链接'.red, ' ', link);
-  });
-
-  if (result.length < 1) {
-    fs.existsSync(outputPath) && fs.unlinkSync(outputPath);
-    return console.log('全部已下载');
+    !!item ? doneArray.push({ name, link }) : unDoneArray.push({ name, link });
   }
 
   // 排个序，A 在前
-  result = result.sort((a, b) => (a.name < b.name ? -1 : 1));
+  doneArray = doneArray.sort((a, b) => (a.name < b.name ? -1 : 1));
+  unDoneArray = unDoneArray.sort((a, b) => (a.name < b.name ? -1 : 1));
 
   // 开始导出
-  const newTxt = dataToArray(result, 'link').join('');
-  fs.writeFileSync(outputPath, newTxt, 'utf8');
-  console.log('已导出到桌面，还有 ' + result.length + '个未下载');
-  callback && callback(result.length);
+  callback && callback({ entry, doneArray, unDoneArray, errerLinks });
 }
 
-// 获取 txt 文件路径
+/// 在桌面备份一个 txt 看哪些没下载
+function saveUnDoneAsTxt(entry, unDoneArray) {
+  const outputDir = 'C:/Users/DELL/Desktop/新建文件夹';
+  const outputPath = path.join(outputDir, getFileName(entry));
+  if (unDoneArray.length < 1) return removeDirSync(outputPath);
+  const newText = dataToArray(unDoneArray, 'link').join('\n');
+  fs.writeFileSync(outputPath, newText, 'utf8');
+}
+
+/// 修改 config 中的未下载数
+function refreshUnDoneNumber(entry, number) {
+  config.forEach((item) => {
+    if (item.path === entry) {
+      if (item.number !== number) console.log(`${entry.blue} 下载数由 ${item.number} 变为 ${number}`);
+      item.number = number;
+    }
+  });
+  const configPath = path.join(__dirname, 'config.js');
+  const newText = `module.exports = ${JSON.stringify(config, null, '  ')};\n`;
+  fs.writeFileSync(configPath, newText, 'utf8');
+}
+
+/// 获取 txt 文件路径
 function ask(callback) {
-  inquirer
-    .prompt([
-      {
-        type: 'input',
-        name: 'url',
-        message: '想要读取的种子路径'
-      }
-    ])
-    .then(({ url }) => {
-      callback && callback(url);
-    });
+  const question = [{ type: 'input', name: 'url', message: '想要读取的种子路径' }];
+  inquirer.prompt(question).then(({ url }) => {
+    callback && callback(url);
+  });
 }
