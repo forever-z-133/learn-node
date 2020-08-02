@@ -32,11 +32,7 @@ module.exports = [
     "number": 3
   },
   {
-    "path": "G:/TDDOWNLOAD/种子/董美香すみれ美香SUMIRE MIKA.txt",
-    "number": 1
-  },
-  {
     "path": "G:/TDDOWNLOAD/种子/水无濑优夏みなせ优夏上原実花Minase Yuuka.txt",
-    "number": 3
+    "number": 2
   }
 ];

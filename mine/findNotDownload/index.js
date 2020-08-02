@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
-const { getFileName, dataToArray, forEachAsync, removeDirSync } = require('../../utils');
+const { getFileName, dataToArray, forEachAsync, removeFileSync } = require('../../utils');
 const { matchName, convertName, hasDownload } = require('../../utils/me');
 require('../../test/consoleColor');
 const config = require('./config');
@@ -77,7 +77,7 @@ function findNotDownload(entry, callback) {
 function saveUnDoneAsTxt(entry, unDoneArray) {
   const outputDir = 'C:/Users/DELL/Desktop/新建文件夹';
   const outputPath = path.join(outputDir, getFileName(entry));
-  if (unDoneArray.length < 1) return removeDirSync(outputPath);
+  if (unDoneArray.length < 1) return removeFileSync(outputPath);
   const newText = dataToArray(unDoneArray, 'link').join('\n');
   fs.writeFileSync(outputPath, newText, 'utf8');
 }

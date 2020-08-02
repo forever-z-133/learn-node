@@ -12,9 +12,7 @@ function emptyDirSync(dir) {
   const files = [];
   try {
     files = fs.readdirSync(dir);
-  } catch (err) {
-    return mkdir.mkdirsSync(dir);
-  }
+  } catch (err) { }
   files.forEach(file => {
     let url = dir + '/' + file;
     if (fs.statSync(url).isDirectory()) {
@@ -24,6 +22,11 @@ function emptyDirSync(dir) {
       fs.unlinkSync(url); // 删除文件
     }
   });
+}
+
+// 删除文件
+function removeFileSync(url) {
+  fs.existsSync(url) && fs.unlinkSync(url)
 }
 
 // 删除文件夹
@@ -246,6 +249,7 @@ function forEachDeep(obj, childKey, callback) {
 module.exports = {
   typeOf,
   emptyDirSync,
+  removeFileSync,
   removeDirSync,
   makeDirSync,
   fileNetType,
