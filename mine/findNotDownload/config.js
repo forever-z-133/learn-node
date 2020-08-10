@@ -17,7 +17,7 @@ module.exports = [
   },
   {
     "path": "G:/TDDOWNLOAD/种子/冲田杏梨沖田杏梨観月あかねAnnri Okita.txt",
-    "number": 1
+    "number": 0
   },
   {
     "path": "G:/TDDOWNLOAD/种子/仁科百华仁科百華momoka nishina.txt",
@@ -33,6 +33,6 @@ module.exports = [
   },
   {
     "path": "G:/TDDOWNLOAD/种子/水无濑优夏みなせ优夏上原実花Minase Yuuka.txt",
-    "number": 2
+    "number": 1
   }
 ];

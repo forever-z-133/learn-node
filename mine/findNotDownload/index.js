@@ -6,13 +6,15 @@ const { matchName, convertName, hasDownload } = require('../../utils/me');
 require('../../test/consoleColor');
 const config = require('./config');
 
+// npm run find -- G:/TDDOWNLOAD/种子/滨崎里绪浜崎りお森下えりか篠原絵梨香.txt
+
 const has = hasDownload(); // 已下载的番号集合 [{ name, unit, url, dir }]
 const tempHas = dataToArray(has, 'name'); // 已下载的番号 [name]
 
 /// 主程序
 const input = process.argv.slice(2).join(' ');
 if (input === 'all') {
-  const list = config.map((v) => v.path);
+  const list = config.filter((v) => v.number).map((v) => v.path);
   forEachAsync(list, (i, url, next) => findNotDownload(url, next), {
     finish: (resArr) => resArr.forEach(controller),
   });

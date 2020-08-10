@@ -7,9 +7,11 @@ require('../../test/consoleColor');
 
 /**
  * 有些影片不好看，或损坏严重又暂无法替代，占用了较多内存
- * 因此将这些文件删除，以 txt 文件代替，这样依旧可以查询到，保持不会重复下载
- * 1. 存在则删除某视频文件，生成同名 txt 文件
+ * 因此将这些文件删除，以 txt 文件代替，这样依旧可以查询到，避免重复下载
+ * 1. 查到已下载的同名，删除改视频文件，生成同名 txt 文件
  * 2. 批量处理某文件夹，使其全部完成上述操作
+ * 
+ * npm run remove -- snis-544
  */
 
 const outputPath = 'I:/下载过';
@@ -18,10 +20,12 @@ makeDirSync(outputPath);
 const args = process.argv.slice(2);
 const name = args[0];
 
+// 下载过并好看的
 const hasList = hasDownload().filter(({ name: n, dir }) => {
   const match = n.includes(name) || n.toLowerCase().includes(name);
   return match && dir !== outputPath;
 });
+// 下载过并不好看的
 const hasTxtList = hasDownload(outputPath).filter(({ name: n }) => {
   return n.includes(name) || n.toLowerCase().includes(name);
 });
@@ -47,6 +51,7 @@ const excludeList = [];
 
 // 拼凑选择列表
 function getChoicesList(exclude) {
+  // 查到哪些同名文件，如要删的同名视频或要加的同名 txt 等
   const txtPath = getTxtPath(name);
 
   // 要删除的
