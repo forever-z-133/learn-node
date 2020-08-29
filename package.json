@@ -20,7 +20,8 @@
     "color": "node test/consoleColor/index.js test",
     "mp4": "node test/m3u8ToMp4/index.js",
     "font": "node test/previewFont/index.js",
-    "readline": "node test/readline/index.js"
+    "readline": "node test/readline/index.js",
+    "rm": "node test/removeSomething/index.js"
   },
   "author": "forever-z-133",
   "license": "ISC",

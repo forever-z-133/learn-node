@@ -7,6 +7,7 @@ _下载使用 chrome 插件 Octotree，可在网页左侧将显示项目的目�
 ## 有用工具
 
 - 根据 css 文件生成可预览其中字体图标的 HTML `npm run font` [源码](https://github.com/forever-z-133/learn-node/blob/master/test/previewFont/index.js)
+- 递归删除文件夹中的文件，比如 `.bak` `.DS_Store` 之类的 `npm run rm` [源码](https://github.com/forever-z-133/learn-node/blob/master/test/removeSomething/index.js)
 
 ## 老色批工具
 

@@ -246,6 +246,25 @@ function forEachDeep(obj, childKey, callback) {
   }
 }
 
+// 递归读取文件夹中的文件
+function loopFindFile(dir, func) {
+  let files = [];
+  try {
+    files = fs.readdirSync(dir);
+  } catch (err) {
+    console.log(err);
+    throw new Error(`${dir} 目录不存在`);
+  }
+  files.forEach((file) => {
+    const url = path.resolve(dir, file);
+    if (fs.statSync(url).isDirectory()) {
+      loopFindFile(url, func); // 递归文件夹
+    } else {
+      func && func(url);
+    }
+  });
+}
+
 module.exports = {
   typeOf,
   emptyDirSync,
@@ -264,6 +283,7 @@ module.exports = {
   dataToObject,
   stringToObject,
   forEachAsync,
-  forEachDeep
+  forEachDeep,
+  loopFindFile
 };
 module.exports.default = module.exports;
