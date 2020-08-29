@@ -6,6 +6,7 @@ const { matchName, convertName, hasDownload } = require('../../utils/me');
 require('../../test/consoleColor');
 const config = require('./config');
 
+// npm run find -- all
 // npm run find -- G:/TDDOWNLOAD/种子/滨崎里绪浜崎りお森下えりか篠原絵梨香.txt
 
 const has = hasDownload(); // 已下载的番号集合 [{ name, unit, url, dir }]
@@ -77,7 +78,7 @@ function findNotDownload(entry, callback) {
 
 /// 在桌面备份一个 txt 看哪些没下载
 function saveUnDoneAsTxt(entry, unDoneArray) {
-  const outputDir = 'C:/Users/DELL/Desktop/新建文件夹';
+  const outputDir = 'C:/Users/61775/Desktop/种子';
   const outputPath = path.join(outputDir, getFileName(entry));
   if (unDoneArray.length < 1) return removeFileSync(outputPath);
   const newText = dataToArray(unDoneArray, 'link').join('\n');

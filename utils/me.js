@@ -35,13 +35,13 @@ getFilesArray = useCache(getFilesArray);
 function hasDownload(dirs) {
   if (typeof dirs === 'string') dirs = [dirs];
   dirs = dirs || [
-    'F:\\下载',
-    'F:\\下载2',
-    'F:\\下载3',
-    'I:\\下载过',
-    'I:\\无码',
-    'I:\\有码',
-    'G:\\TDDOWNLOAD\\写真'
+    'E:\\下载',
+    'E:\\下载2',
+    'E:\\下载3',
+    'J:\\下载过',
+    'J:\\无码',
+    'J:\\有码',
+    'I:\\TDDOWNLOAD\\写真'
   ];
   return dirs.reduce((re, dir) => {
     const items = getFilesArray(dir);

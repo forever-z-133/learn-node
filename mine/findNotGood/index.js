@@ -14,7 +14,7 @@ require('../../test/consoleColor');
  * npm run remove -- snis-544
  */
 
-const outputPath = 'I:/下载过';
+const outputPath = 'J:/下载过';
 makeDirSync(outputPath);
 
 const args = process.argv.slice(2);
