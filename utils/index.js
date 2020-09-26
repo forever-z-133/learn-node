@@ -9,7 +9,7 @@ function typeOf(obj) {
 
 // 包括其下所有文件及文件夹
 function emptyDirSync(dir) {
-  const files = [];
+  let files = [];
   try {
     files = fs.readdirSync(dir);
   } catch (err) { }
