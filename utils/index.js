@@ -101,6 +101,7 @@ function writeJson(url, data) {
 
 // 获取文本名（不妙）
 function getFileName(filePath) {
+  filePath = filePath.replace(/[?#].*/, '');
   return filePath.split(/[\/\\]/).slice(-1)[0];
   // return filePath.slice(filePath.lastIndexOf('/') + 1);
 }
