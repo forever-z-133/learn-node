@@ -15,6 +15,7 @@
     "find": "node mine/findNotDownload/index.js",
     "remove": "node mine/findNotGood/index.js",
     "rename": "node mine/rename/index.js",
+    "same": "node mine/findSame/index.js",
     "alert": "node test/alert/index.js",
     "bilibili": "node test/bilibili/index.js",
     "color": "node test/consoleColor/index.js test",

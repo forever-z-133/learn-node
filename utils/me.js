@@ -4,8 +4,10 @@ const { addZero, useCache } = require('./index');
 
 // 获取链接中的番号
 // 匹配 110313-691 MKBD-S60 RED-195 21ID-008 这几种番号
+const d_d_reg = /\d+[\-\_]\d{3,}\w*/;
+const w_d_reg = /\d*\w+[\-\_]\w?\d{2,}[a-eA-E]?/;
 function matchName(link) {
-  return (link.match(/\d+[\-\_]\d{3,}\w*/) || link.match(/\d*\w+[\-\_]\w?\d{2,}[a-eA-E]?/) || [])[0];
+  return (link.match(d_d_reg) || link.match(w_d_reg) || [])[0];
 }
 
 // 转化为可用番号
@@ -34,15 +36,7 @@ getFilesArray = useCache(getFilesArray);
 // 获取已下载的番号
 function hasDownload(dirs) {
   if (typeof dirs === 'string') dirs = [dirs];
-  dirs = dirs || [
-    'E:\\下载',
-    'E:\\下载2',
-    'E:\\下载3',
-    'J:\\下载过',
-    'J:\\无码',
-    'J:\\有码',
-    'I:\\TDDOWNLOAD\\写真'
-  ];
+  dirs = dirs || ['E:\\bad', 'E:\\下载2', 'E:\\下载3', 'J:\\下载过', 'J:\\无码', 'J:\\有码', 'I:\\TDDOWNLOAD\\写真'];
   return dirs.reduce((re, dir) => {
     const items = getFilesArray(dir);
     return re.concat(items);
@@ -54,6 +48,6 @@ module.exports = {
   matchName,
   convertName,
   getFilesArray,
-  hasDownload
+  hasDownload,
 };
 module.exports.default = module.exports;
