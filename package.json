@@ -24,6 +24,8 @@
     "font": "node test/previewFont/index.js",
     "readline": "node test/readline/index.js",
     "rm": "node test/removeSomething/index.js"
+    "rm": "node test/removeSomething/index.js",
+    "rmDir": "node test/removeEmptyDir/index.js"
   },
   "author": "forever-z-133",
   "license": "ISC",

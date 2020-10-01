@@ -7,32 +7,52 @@ function typeOf(obj) {
   return typeStr.substr(0, typeStr.length - 1).toLowerCase();
 }
 
-// 包括其下所有文件及文件夹
-function emptyDirSync(dir) {
+// 获取文件夹中的文件列表
+function getFilesInDirSync(dir) {
   let files = [];
   try {
     files = fs.readdirSync(dir);
-  } catch (err) { }
-  files.forEach(file => {
-    let url = dir + '/' + file;
-    if (fs.statSync(url).isDirectory()) {
-      emptyDirSync(url); // 递归删除文件夹
-      fs.rmdirSync(url);
+  } catch (err) {}
+  return files;
+}
+
+// 递归出所有的文件夹
+function forEachDir(dir, dirCallback, fileCallback) {
+  let files = getFilesInDirSync(dir);
+  files.forEach((file) => {
+    let _path = path.join(dir, file);
+    if (fs.statSync(_path).isDirectory()) {
+      // 如果自己是文件夹，则先继续递归，然后再处理自身
+      forEachDir(_path, dirCallback, fileCallback);
+      dirCallback && dirCallback(_path);
     } else {
-      fs.unlinkSync(url); // 删除文件
+      fileCallback && fileCallback(_path);
     }
   });
 }
 
-// 删除文件
-function removeFileSync(url) {
-  fs.existsSync(url) && fs.unlinkSync(url)
+// 清空文件夹
+function emptyDirSync(dir) {
+  forEachDir(
+    dir,
+    (_dir) => {
+      fs.rmdirSync(url); // 递归删除文件夹
+    },
+    (_file) => {
+      fs.unlinkSync(url); // 删除文件
+    }
+  );
 }
 
 // 删除文件夹
 function removeDirSync(url) {
   emptyDirSync(url);
   fs.rmdirSync(url);
+}
+
+// 删除文件
+function removeFileSync(url) {
+  fs.existsSync(url) && fs.unlinkSync(url);
 }
 
 // 新建文件夹
@@ -60,8 +80,8 @@ function _download(url, output, fileName, callback) {
     filePath = path.join(output, fileName);
   }
   const stream = fs.createWriteStream(filePath);
-  ajax(url, 'get', res => {
-    res.on('data', chunk => {
+  ajax(url, 'get', (res) => {
+    res.on('data', (chunk) => {
       stream.write(chunk);
     });
     res.on('end', () => {
@@ -70,8 +90,8 @@ function _download(url, output, fileName, callback) {
     });
   });
 }
-const download = function(url, output, fileName) {
-  return new Promise(resolve => {
+const download = function (url, output, fileName) {
+  return new Promise((resolve) => {
     _download(url, output, fileName, resolve);
   });
 };
@@ -121,13 +141,13 @@ function addZero(num, len = 2) {
 
 // 读取文件(本地&网络)
 function readFile(url, callback) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const netType = fileNetType(url);
     if (netType === 'https' || netType === 'http') {
       ajax = netType === 'https' ? require('https') : require('http');
-      ajax.get(url, res => {
+      ajax.get(url, (res) => {
         let body = '';
-        res.on('data', chunk => (body += chunk));
+        res.on('data', (chunk) => (body += chunk));
         res.on('end', () => {
           const result = body.toString('utf8');
           callback && callback(result);
@@ -145,7 +165,7 @@ function readFile(url, callback) {
 // 使用函数结果缓存
 function useCache(fn) {
   var cache = {};
-  return function() {
+  return function () {
     var key = arguments.length + Array.prototype.join.call(arguments, ',');
     if (key in cache) return cache[key];
     else return (cache[key] = fn.apply(this, arguments));
@@ -161,7 +181,7 @@ function dataToArray(data, key, options) {
   var noEmpty = options.noEmpty || false; // 排除值为空的
   var deepKey = options.deepKey || ''; // 按某 key 向下递归
 
-  return data.reduce(function(re, item) {
+  return data.reduce(function (re, item) {
     var value = item[key],
       deep = [];
     if (noEmpty && value == undefined) return re;
@@ -177,7 +197,7 @@ function dataToArray(data, key, options) {
 function dataToObject(data, keyName, valueName, options) {
   if (typeOf(data) !== 'array' || !data.length) return [];
   options = options || {};
-  return data.reduce(function(re, item, index) {
+  return data.reduce(function (re, item, index) {
     var key = keyName ? item[keyName] : index;
     var value = valueName ? item[valueName] : item;
     re[key] = value;
@@ -191,7 +211,7 @@ function stringToObject(str, divide, concat) {
   divide = divide || '&';
   concat = concat || '=';
   var arr = str.split(divide);
-  return arr.reduce(function(re, item) {
+  return arr.reduce(function (re, item) {
     if (!item) return re;
     var temp = item.split(concat);
     var key = temp.shift().trim();
@@ -203,6 +223,36 @@ function stringToObject(str, divide, concat) {
     re[key] = value;
     return re;
   }, {});
+}
+
+// {a:1,b:2} 转为 a=1&b=2
+function objectToString(obj, divide = '&', concat = '=') {
+  if (!obj || typeof obj !== 'object') return '';
+  let result = [];
+  for (const key in obj) {
+    if ({}.hasOwnProperty.call(obj, key)) {
+      let val = obj[key];
+      if (val === undefined || val == null) val = '';
+      result.push(encodeURIComponent(key) + concat + encodeURIComponent(val));
+    }
+  }
+  return result.join(divide);
+}
+
+// 给链接添加参数
+// addDataToUrl('x.html?a=1', {b:2}) // x.html?a=1&b=2
+function addDataToUrl(url, data) {
+  if (!data) return url;
+
+  const concat = /\?/.test(url) ? '&' : '?';
+
+  if (typeof data === 'string') {
+    return url + concat + data;
+  } else if (typeOf(data) === 'object') {
+    return url + concat + objectToString(data);
+  } else {
+    throw new Error('入参有误');
+  }
 }
 
 // 异步循环
@@ -218,7 +268,7 @@ function forEachAsync(data, func, options) {
   (function loop(index) {
     const item = data[index];
     if (!item) return;
-    func(index, item, res => {
+    func(index, item, (res) => {
       restQueue++;
       result[index] = res;
       if (++loaded > total) return finish(result);
@@ -268,6 +318,8 @@ function loopFindFile(dir, func) {
 
 module.exports = {
   typeOf,
+  forEachDir,
+  getFilesInDirSync,
   emptyDirSync,
   removeFileSync,
   removeDirSync,
@@ -283,8 +335,10 @@ module.exports = {
   dataToArray,
   dataToObject,
   stringToObject,
+  objectToString,
+  addDataToUrl,
   forEachAsync,
   forEachDeep,
-  loopFindFile
+  loopFindFile,
 };
 module.exports.default = module.exports;
