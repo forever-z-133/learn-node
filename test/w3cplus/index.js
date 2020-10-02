@@ -3,12 +3,12 @@ const path = require('path');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const inquirer = require('inquirer');
-const { makeDirSync, addDataToUrl } = require('../../utils/index.js');
+const { makeDirSync, addDataToUrl, forEachAsync } = require('../../utils/index.js');
 
-const baseImgUrl = 'https://www.w3cplus.com';
-const expire = 1601569067;
-const code = 'ZsBeD7tsgzg';
-const sign = '63cc2f94f6ef5f67baabef8596a3ea99';
+const baseUrl = 'https://www.w3cplus.com';
+const expire = 1601657826;
+const code = 'sCfV6JP2U2c';
+const sign = '40dd100bc36f6f362ffa621b38d06cd0';
 const htmlFileDir = path.resolve(__dirname, 'temp');
 
 /**
@@ -20,21 +20,28 @@ const htmlFileDir = path.resolve(__dirname, 'temp');
   // 询问要处理的文件夹
   let [url] = process.argv.slice(2);
   if (!url) url = await askUrl();
-  const fileName = url.split('/').slice(-1)[0].slice(0, -5);
 
-  // 读取内容
-  console.log('download...', url);
-  const content = await ajaxContent(url);
-
-  // 爬到了付费信息，需重新登录
-  if (content.includes('id="paywall-link-box"')) {
-    return console.log('授权失效，需重新授权');
+  if (url === 'auto') {
+    // 自动全爬取
+    let page = 131;
+    let ended = 183;
+    (async function loop() {
+      const listUrl = addDataToUrl(baseUrl, { page });
+      console.log('-----------------------');
+      console.log('自动爬取', listUrl);
+      await doItMore(listUrl);
+      if (page >= ended) return console.log('finish');
+      page++;
+      loop();
+    })();
+  } else if (url.includes('page=')) {
+    // 链接内容是列表，则批处理
+    const listUrl = url;
+    await doItMore(listUrl);
+  } else {
+    // 链接内容是文章，则直接处理
+    await doIt(url);
   }
-
-  // 写成文件
-  const filePath = path.join(htmlFileDir, fileName + '.html');
-  writeToHtml(content, filePath);
-  console.log('完成', filePath);
 })();
 
 // 询问处理哪个链接
@@ -46,38 +53,112 @@ function askUrl(callback) {
   });
 }
 
+// 处理多个文章，即列表链接
+async function doItMore(listUrl, callback) {
+  const urls = await findArticleUrls(listUrl);
+  return new Promise((resolve) => {
+    forEachAsync(
+      urls,
+      async (i, _url, next) => {
+        await doIt(_url);
+        next();
+      },
+      {
+        finish: () => {
+          console.log('本页数据已全部下载完成');
+          resolve();
+        },
+      }
+    );
+  });
+}
+
+// 处理单个文章
+async function doIt(url) {
+  const fileName = url.split('/').slice(-1)[0].slice(0, -5);
+
+  // 读取内容
+  // console.log('download...', url);
+  const content = await ajaxContent(url);
+
+  // 爬到了付费信息，需重新登录
+  if (content.includes('id="paywall-link-box"')) {
+    return console.log('授权失效，需重新授权');
+  }
+
+  // 写成文件
+  const filePath = path.join(htmlFileDir, fileName + '.html');
+  writeToHtml(content, filePath);
+  console.log('完成', filePath);
+}
+
+// 从列表链接中读取文章链接列表
+async function findArticleUrls(listUrl, callback) {
+  const { data: html } = await axios.get(listUrl);
+  const $ = cheerio.load(html);
+  const $urls = $('.node > .more > a');
+  const result = [];
+  forEachDom($, $urls, ($url) => {
+    const href = $url.attr('href');
+    const url = `${baseUrl}${href}`;
+    result.push(url);
+    callback && callback(url);
+  });
+  return result;
+}
+
 // 获取链接中文章部分的 html 字符串
 async function ajaxContent(url) {
   url = addDataToUrl(url, { expire, code, sign });
   const { data: html } = await axios.get(url);
   const $ = cheerio.load(html);
-  const $content = $('.field-name-body');
+  let $content = $('.field-name-body');
+  if ($content.length < 1) {
+    // 如果找不到内容，就再向上层一点，比如 collective-7.html 中会出现其他内容的情况
+    $content = $('.body-content');
+  }
+  convertLinkHref($, $content);
   convertImgsAttr($, $content);
   convertVideosAttr($, $content);
   return $content.html();
 }
 
+// 处理链接部分
+function convertLinkHref($, $content) {
+  const $links = $content.find('a');
+  forEachDom($, $links, ($link) => {
+    const href = $link.attr('href') || '';
+    const newHref = href.replace(/\/\/www.w3cplus.com\/[^/]+\//, './');
+    $link.attr('href', newHref);
+  });
+}
+
 // 处理图片部分
 function convertImgsAttr($, $content) {
   const $imgs = $content.find('img');
-  for (let i in $imgs) {
-    if (!$imgs.hasOwnProperty(i) || !/\d+/.test(i)) continue;
-    const $img = $($imgs[i]);
-    const src = $img.attr('src');
+  forEachDom($, $imgs, ($img) => {
+    const src = $img.attr('src') || '';
     const newSrc = addPrefix(src);
     if (src !== newSrc) $img.attr('src', newSrc);
-  }
+  });
 }
 
 // 处理视频部分
 function convertVideosAttr($, $content) {
   const $iframes = $content.find('iframe');
-  for (let i in $iframes) {
-    if (!$iframes.hasOwnProperty(i) || !/\d+/.test(i)) continue;
-    const $iframe = $($iframes[i]);
-    const src = $iframe.attr('src');
-    if (!/\.(mp4|avi|rmvb)$/.test(src)) continue;
+  forEachDom($, $iframes, ($iframe) => {
+    const src = $iframe.attr('src') || '';
+    if (!/\.(mp4|avi|rmvb)$/.test(src)) return;
     $iframe.replaceWith(`<video src="${src}" controls width="100%" height="600"></video>`);
+  });
+}
+
+// 遍历 cheerio 的列表 dom
+function forEachDom($, $list, callback) {
+  for (let i in $list) {
+    if (!$list.hasOwnProperty(i) || !/\d+/.test(i)) continue;
+    const $item = $($list[i]);
+    callback && callback($item);
   }
 }
 
@@ -100,6 +181,6 @@ function getTemplateHtml() {
 
 // 给图片加上前缀
 function addPrefix(src) {
-  if (/^\//.test(src)) src = `${baseImgUrl}${src}`;
+  if (/^\//.test(src)) src = `${baseUrl}${src}`;
   return src;
 }
