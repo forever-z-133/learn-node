@@ -12,7 +12,7 @@ function getFilesInDirSync(dir) {
   let files = [];
   try {
     files = fs.readdirSync(dir);
-  } catch (err) {}
+  } catch (err) { }
   return files;
 }
 
@@ -87,6 +87,9 @@ function _download(url, output, fileName, callback) {
     res.on('end', () => {
       stream.end();
       callback && callback(filePath);
+    });
+    res.on('error', () => {
+      _download(url, output, fileName, callback);
     });
   });
 }
@@ -297,25 +300,6 @@ function forEachDeep(obj, childKey, callback) {
   }
 }
 
-// 递归读取文件夹中的文件
-function loopFindFile(dir, func) {
-  let files = [];
-  try {
-    files = fs.readdirSync(dir);
-  } catch (err) {
-    console.log(err);
-    throw new Error(`${dir} 目录不存在`);
-  }
-  files.forEach((file) => {
-    const url = path.resolve(dir, file);
-    if (fs.statSync(url).isDirectory()) {
-      loopFindFile(url, func); // 递归文件夹
-    } else {
-      func && func(url);
-    }
-  });
-}
-
 module.exports = {
   typeOf,
   forEachDir,
@@ -339,6 +323,5 @@ module.exports = {
   addDataToUrl,
   forEachAsync,
   forEachDeep,
-  loopFindFile,
 };
 module.exports.default = module.exports;

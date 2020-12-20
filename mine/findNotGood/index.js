@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const inquirer = require('inquirer');
 const { makeDirSync } = require('../../utils/index');
-const { hasDownload, convertName } = require('../../utils/me');
+const { CodeFileItem, convertName, findSimilarNameFiles } = require('../../utils/me');
 require('../../test/consoleColor');
 
 /**
@@ -14,77 +14,60 @@ require('../../test/consoleColor');
  * npm run remove -- snis-544
  */
 
-const outputPath = 'J:/下载过';
+const outputPath = path.resolve('J:/下载过');
 makeDirSync(outputPath);
 
 const args = process.argv.slice(2);
 const name = args[0];
 
-// 下载过并好看的
-const hasList = hasDownload().filter(({ name: n, dir }) => {
-  const match = n.includes(name) || n.toLowerCase().includes(name);
-  return match && dir !== outputPath;
-});
-// 下载过并不好看的
-const hasTxtList = hasDownload(outputPath).filter(({ name: n }) => {
-  return n.includes(name) || n.toLowerCase().includes(name);
-});
-
 // 正式操作
 const excludeList = [];
 (async function loop() {
-  const choices = getChoicesList(excludeList);
+  const similar = findSimilarNameFiles(name);
+
+  const needDelete = []; // 要删的
+  const needCreate = []; // 要加的
+  const alreadyHas = []; // 已有的
+  similar.forEach((item) => {
+    const { url, dir } = item;
+    if (dir === outputPath) alreadyHas.push(item);
+    else if (!excludeList.includes(url)) needDelete.push(item);
+  });
+  const fileName = name + '.txt';
+  const targetUrl = path.join(outputPath, fileName);
+  if (!fs.existsSync(targetUrl)) {
+    const item = new CodeFileItem(fileName, name, 'txt', outputPath, targetUrl);
+    needCreate.push(item);
+  }
+
+  const choices = [];
+  needDelete.forEach(({ url }) => {
+    const opt = { value: `remove ${url}`, name: `${'删除'.red}：${url}` }
+    choices.push(opt);
+  });
+  needCreate.forEach(({ name, unit }) => {
+    const url = path.resolve(outputPath, name.toUpperCase() + '.' + unit);
+    const opt = { value: `create ${url}`, name: `${'新建'.green}：${url}` }
+    choices.push(opt);
+  });
+  alreadyHas.forEach(({ url }) => {
+    console.log(`------ 已存在 ${url.green} 无需新建\n`);
+  });
+  choices.push({ label: '退出', value: 'cancel' });
 
   const choose = await ask(choices);
   if (choose === 'cancel') process.exit(0);
 
-  const [method, path] = choose.split(' ');
+  const [method, url] = choose.split(' ');
   if (method === 'remove') {
-    excludeList.push(path);
-    removeFile(path);
+    excludeList.push(url);
+    removeFile(url);
   } else if (method === 'create') {
-    excludeList.push(path);
-    createFile(path);
+    excludeList.push(url);
+    createFile(url);
   }
   await loop();
 })();
-
-// 拼凑选择列表
-function getChoicesList(exclude) {
-  // 查到哪些同名文件，如要删的同名视频或要加的同名 txt 等
-  const txtPath = getTxtPath(name);
-
-  // 要删除的
-  const removeList = hasList.reduce((re, { url }) => {
-    if (exclude.includes(url)) return re;
-    return re.concat([
-      {
-        name: `${'删除'.red}：${url}`,
-        value: `remove ${url}`
-      }
-    ]);
-  }, []);
-
-  // 是否已新建过
-  let alreadyHasTxt = hasTxtList.some(({ name: n, url }) => {
-    const name2 = convertName(name);
-    return n === name2 || n.toLowerCase === name2;
-  });
-  if (exclude.includes(txtPath)) {
-    alreadyHasTxt = true;
-  } else {
-    alreadyHasTxt && console.log(`------ 已存在 ${txtPath.green} 无需新建\n`);
-  }
-
-  // 要新建的
-  let createList = !alreadyHasTxt && {
-    name: `${'新建'.green}：${txtPath}`,
-    value: `create ${txtPath}`
-  };
-  createList = createList ? [createList] : [];
-
-  return [...removeList, ...createList, { label: '退出', value: 'cancel' }];
-}
 
 // 询问
 async function ask(choices) {
@@ -98,11 +81,6 @@ async function ask(choices) {
   ]);
   const { choose } = result || {};
   return choose;
-}
-
-// txt 的目标路径
-function getTxtPath(name) {
-  return path.join(outputPath, convertName(name) + '.txt').replace(/\\/g, '/');
 }
 
 // 删除文件

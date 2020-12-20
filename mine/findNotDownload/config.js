@@ -1,38 +1,38 @@
 module.exports = [
   {
-    "path": "G:/TDDOWNLOAD/种子/吉川爱美.txt",
-    "number": 9
+    "path": "I:/TDDOWNLOAD/种子/吉川爱美.txt",
+    "number": 4
   },
   {
-    "path": "G:/TDDOWNLOAD/种子/泷川索菲亚滝川ソフィアTAKIGAWA SOFIA.txt",
+    "path": "I:/TDDOWNLOAD/种子/泷川索菲亚滝川ソフィアTAKIGAWA SOFIA.txt",
     "number": 5
   },
   {
-    "path": "G:/TDDOWNLOAD/种子/爱乃娜美爱乃なみNAMI AINO.txt",
-    "number": 30
+    "path": "I:/TDDOWNLOAD/种子/爱乃娜美爱乃なみNAMI AINO.txt",
+    "number": 25
   },
   {
-    "path": "G:/TDDOWNLOAD/种子/滨崎里绪浜崎りお森下えりか篠原絵梨香.txt",
-    "number": 70
+    "path": "I:/TDDOWNLOAD/种子/滨崎里绪浜崎りお森下えりか篠原絵梨香.txt",
+    "number": 68
   },
   {
-    "path": "G:/TDDOWNLOAD/种子/冲田杏梨沖田杏梨観月あかねAnnri Okita.txt",
+    "path": "I:/TDDOWNLOAD/种子/冲田杏梨沖田杏梨観月あかねAnnri Okita.txt",
     "number": 0
   },
   {
-    "path": "G:/TDDOWNLOAD/种子/仁科百华仁科百華momoka nishina.txt",
-    "number": 29
+    "path": "I:/TDDOWNLOAD/种子/仁科百华仁科百華momoka nishina.txt",
+    "number": 21
   },
   {
-    "path": "G:/TDDOWNLOAD/种子/京香julia.txt",
-    "number": 71
+    "path": "I:/TDDOWNLOAD/种子/京香julia.txt",
+    "number": 70
   },
   {
-    "path": "G:/TDDOWNLOAD/种子/里中结衣菅野みいなMiina Kanno.txt",
+    "path": "I:/TDDOWNLOAD/种子/里中结衣菅野みいなMiina Kanno.txt",
     "number": 3
   },
   {
-    "path": "G:/TDDOWNLOAD/种子/水无濑优夏みなせ优夏上原実花Minase Yuuka.txt",
+    "path": "I:/TDDOWNLOAD/种子/水无濑优夏みなせ优夏上原実花Minase Yuuka.txt",
     "number": 1
   }
 ];

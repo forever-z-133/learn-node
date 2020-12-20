@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const inquirer = require('inquirer');
-const { removeFileSync, loopFindFile } = require("../../utils/index");
+const { removeFileSync, forEachDir } = require("../../utils/index");
 
 /// 输入文件夹和特征，删除该文件夹下所有相关文件
 /// 比如 .bak .orig .DS_store 等文件
@@ -10,7 +10,7 @@ const { removeFileSync, loopFindFile } = require("../../utils/index");
   let [dir] = process.argv.slice(2);
   if (!dir) dir = await askDir();
   const reg = await askReg();
-  loopFindFile(dir, just_do_it(reg));
+  forEachDir(dir, null, just_do_it(reg));
 })();
 
 /// 根据特征删除文件

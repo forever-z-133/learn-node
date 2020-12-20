@@ -6,9 +6,9 @@ const inquirer = require('inquirer');
 const { makeDirSync, addDataToUrl, forEachAsync } = require('../../utils/index.js');
 
 const baseUrl = 'https://www.w3cplus.com';
-const expire = 1601657826;
-const code = 'sCfV6JP2U2c';
-const sign = '40dd100bc36f6f362ffa621b38d06cd0';
+const expire = 1603609570;
+const code = 'lLgbnA5Gq6Q';
+const sign = '5e66574a53e98663a58605bde47b1dab';
 const htmlFileDir = path.resolve(__dirname, 'temp');
 
 /**
@@ -23,8 +23,8 @@ const htmlFileDir = path.resolve(__dirname, 'temp');
 
   if (url === 'auto') {
     // 自动全爬取
-    let page = 131;
-    let ended = 183;
+    let page = 0;
+    let ended = 1;
     (async function loop() {
       const listUrl = addDataToUrl(baseUrl, { page });
       console.log('-----------------------');
