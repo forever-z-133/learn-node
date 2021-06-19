@@ -56,7 +56,7 @@ getFilesArray = useCache(getFilesArray);
 // 获取已下载的番号
 function hasDownload(dirs) {
   if (typeof dirs === 'string') dirs = [dirs];
-  dirs = dirs || ['E:\\bad', 'E:\\下载2', 'E:\\下载3', 'J:\\下载过', 'J:\\无码', 'J:\\有码', 'I:\\TDDOWNLOAD\\写真'];
+  dirs = dirs || ['E:\\bad', 'E:\\下载2', 'E:\\下载3', 'I:\\下载过', 'I:\\无码', 'I:\\有码', 'I:\\写真'];
   return dirs.reduce((re, dir) => {
     const items = getFilesArray(dir);
     return re.concat(items);

@@ -7,7 +7,7 @@ require('../../test/consoleColor');
 const config = require('./config');
 
 // npm run find -- all
-// npm run find -- G:/TDDOWNLOAD/种子/滨崎里绪浜崎りお森下えりか篠原絵梨香.txt
+// npm run find -- I:/种子/滨崎里绪浜崎りお森下えりか篠原絵梨香.txt
 
 const has = hasDownload(); // 已下载的番号集合 [{ name, unit, url, dir }]
 const tempHas = dataToArray(has, 'name'); // 已下载的番号 [name]
