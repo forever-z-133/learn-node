@@ -23,8 +23,8 @@ const htmlFileDir = path.resolve(__dirname, 'temp');
 
   if (url === 'auto') {
     // 自动全爬取
-    let page = 0;
-    let ended = 1;
+    let page = 1;
+    let ended = 10;
     (async function loop() {
       const listUrl = addDataToUrl(baseUrl, { page });
       console.log('-----------------------');
@@ -127,9 +127,10 @@ async function ajaxContent(url) {
 function convertLinkHref($, $content) {
   const $links = $content.find('a');
   forEachDom($, $links, ($link) => {
-    const href = $link.attr('href') || '';
-    const newHref = href.replace(/\/\/www.w3cplus.com\/[^/]+\//, './');
-    $link.attr('href', newHref);
+    let href = $link.attr('href') || '';
+    href = addPrefix(src);
+    href = href.replace(/\/\/www.w3cplus.com\/[^/]+\//, './');
+    $link.attr('href', href);
   });
 }
 
@@ -145,9 +146,11 @@ function convertImgsAttr($, $content) {
 
 // 处理视频部分
 function convertVideosAttr($, $content) {
-  const $iframes = $content.find('iframe');
+  const $iframes = $content.find('video');
   forEachDom($, $iframes, ($iframe) => {
-    const src = $iframe.attr('src') || '';
+    let src = $iframe.attr('src') || '';
+    const newSrc = addPrefix(src);
+    if (src !== newSrc) src = newSrc;
     if (!/\.(mp4|avi|rmvb)$/.test(src)) return;
     $iframe.replaceWith(`<video src="${src}" controls width="100%" height="600"></video>`);
   });
@@ -181,6 +184,6 @@ function getTemplateHtml() {
 
 // 给图片加上前缀
 function addPrefix(src) {
-  if (/^\//.test(src)) src = `${baseUrl}${src}`;
+  if (/^\/(?!\/)/.test(src)) src = `${baseUrl}${src}`;
   return src;
 }
