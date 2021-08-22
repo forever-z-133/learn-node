@@ -7,6 +7,12 @@ function typeOf(obj) {
   return typeStr.substr(0, typeStr.length - 1).toLowerCase();
 }
 
+function sleep(delay) {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay);
+  });
+}
+
 // 获取文件夹中的文件列表
 function getFilesInDirSync(dir) {
   let files = [];
@@ -69,16 +75,21 @@ function fileNetType(url) {
 
 // 下载文件
 function _download(url, output, fileName, callback) {
+  // 可忽略第三个参
   if (typeof fileName === 'function') {
     callback = fileName;
-    fileName = null;
+    fileName = undefined;
   }
-  fileName = fileName || getFileName(url);
+  // 若传入文件名，则从 url 中取
+  if (fileName === undefined) fileName = getFileName(url);
   if (!fileName) throw new Error('没找到文件名');
-  let filePath = path.join(output);
-  if (filePath.lastIndexOf(fileName) < 0) {
-    filePath = path.join(output, fileName);
+  // 若转入的文件名没带后缀，则从 url 中取
+  if (fileName.lastIndexOf('.') < 0) {
+    fileName += getFileUnit(url, '.jpg');
   }
+  // 拼凑出本地文件地址
+  const filePath = path.join(output, fileName);
+  // 开始下载
   const stream = fs.createWriteStream(filePath);
   ajax(url, 'get', (res) => {
     res.on('data', (chunk) => {
@@ -105,7 +116,7 @@ function readJson(url) {
   if (!/\.json$/i.test(url)) throw new Error('链接不是 json 文件');
   let str = fs.readFileSync(url, 'utf8');
   try {
-    return JSON.parse(str);
+    return str ? JSON.parse(str) : undefined;
   } catch (e) {
     throw e;
   }
@@ -115,7 +126,7 @@ function readJson(url) {
 function writeJson(url, data) {
   if (!/\.json$/i.test(url)) throw new Error('链接不是 json 文件');
   try {
-    var str = JSON.stringify(data);
+    var str = JSON.stringify(data, 2, '\t');
     fs.writeFileSync(url, str);
   } catch (e) {
     throw e;
@@ -127,6 +138,13 @@ function getFileName(filePath) {
   filePath = filePath.replace(/[?#].*/, '');
   return filePath.split(/[\/\\]/).slice(-1)[0];
   // return filePath.slice(filePath.lastIndexOf('/') + 1);
+}
+
+// 获取文件后缀
+function getFileUnit(url, defaultUnit = '.jpg') {
+  const unitIndex = url.lastIndexOf('.');
+  unit = unitIndex > -1 ? url.substring(unitIndex) : defaultUnit;
+  return unit;
 }
 
 function ajax(url, method = 'get', callback) {
@@ -302,6 +320,7 @@ function forEachDeep(obj, childKey, callback) {
 
 module.exports = {
   typeOf,
+  sleep,
   forEachDir,
   getFilesInDirSync,
   emptyDirSync,
@@ -313,6 +332,7 @@ module.exports = {
   readJson,
   writeJson,
   getFileName,
+  getFileUnit,
   readFile,
   addZero,
   useCache,

@@ -19,6 +19,7 @@
     "alert": "node test/alert/index.js",
     "bilibili": "node test/bilibili/index.js",
     "w3c": "node test/w3cplus/index.js",
+    "tui": "node test/tuigirl/index.js",
     "color": "node test/consoleColor/index.js test",
     "mp4": "node test/m3u8ToMp4/index.js",
     "mp42": "node test/m3u8ToMp4ByFfmpeg/index.js",
@@ -28,9 +29,8 @@
     "rmDir": "node test/removeEmptyDir/index.js"
   },
   "author": "forever-z-133",
-  "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.3",
     "cross-spawn": "^7.0.0",
     "inquirer": "^7.0.0"
