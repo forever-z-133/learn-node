@@ -26,7 +26,7 @@ async function downloadOneList(page = 1) {
     if (cache.includes(title)) {
       console.log(`此链接已下载，则跳过 ${articleUrl}\n`);
     } else {
-      const articleTips = `开始处理文章 ${articleUrl}`.green;
+      const articleTips = `开始处理文章 ${articleUrl} ${title}`.green;
       console.group(articleTips);
       let prevIndex = 0;
       await loadArticleUrl(articleUrl, async (partData, ii) => {
@@ -117,7 +117,11 @@ async function downloadOnePartImages(partData, prevIndex) {
       } else {
         // 下载图片
         console.log(`下载图片 ${img} -> ${fileName.italic}`);
-        await download(img, dir, fileName);
+        try {
+          await download(img, dir, fileName);
+        } catch (err) {
+          console.log(`下载失败 ${img} -> ${fileName.italic}`.red);
+        }
       }
       next();
     }, { finish: resolve });

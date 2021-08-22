@@ -74,7 +74,7 @@ function fileNetType(url) {
 }
 
 // 下载文件
-function _download(url, output, fileName, callback) {
+function _download(url, output, fileName, callback, reject) {
   // 可忽略第三个参
   if (typeof fileName === 'function') {
     callback = fileName;
@@ -91,22 +91,30 @@ function _download(url, output, fileName, callback) {
   const filePath = path.join(output, fileName);
   // 开始下载
   const stream = fs.createWriteStream(filePath);
-  ajax(url, 'get', (res) => {
-    res.on('data', (chunk) => {
-      stream.write(chunk);
+  try {
+    ajax(url, 'get', (res) => {
+      const { statusCode } = res;
+      if (statusCode !== 200) {
+        return reject && reject();
+      }
+      res.on('data', (chunk) => {
+        stream.write(chunk);
+      });
+      res.on('end', () => {
+        stream.end();
+        callback && callback(filePath);
+      });
+      res.on('error', () => {
+        reject && reject();
+      });
     });
-    res.on('end', () => {
-      stream.end();
-      callback && callback(filePath);
-    });
-    res.on('error', () => {
-      _download(url, output, fileName, callback);
-    });
-  });
+  } catch (e) {
+    reject && reject();
+  }
 }
 const download = function (url, output, fileName) {
-  return new Promise((resolve) => {
-    _download(url, output, fileName, resolve);
+  return new Promise((resolve, reject) => {
+    _download(url, output, fileName, resolve, reject);
   });
 };
 
