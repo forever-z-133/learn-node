@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const spawn = require("cross-spawn");
 
 // 类型判断
 function typeOf(obj) {
@@ -90,26 +91,11 @@ function _download(url, output, fileName, callback, reject) {
   // 拼凑出本地文件地址
   const filePath = path.join(output, fileName);
   // 开始下载
-  const stream = fs.createWriteStream(filePath);
   try {
-    ajax(url, 'get', (res) => {
-      const { statusCode } = res;
-      if (statusCode !== 200) {
-        return reject && reject();
-      }
-      res.on('data', (chunk) => {
-        stream.write(chunk);
-      });
-      res.on('end', () => {
-        stream.end();
-        callback && callback(filePath);
-      });
-      res.on('error', () => {
-        reject && reject();
-      });
-    });
-  } catch (e) {
-    reject && reject();
+    spawn.sync("cmd.exe", ["/c", `curl -L ${url} -o ${filePath}`]);
+    callback && callback();
+  } catch(err) {
+    reject();
   }
 }
 const download = function (url, output, fileName) {
