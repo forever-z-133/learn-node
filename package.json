@@ -26,7 +26,8 @@
     "font": "node test/previewFont/index.js",
     "readline": "node test/readline/index.js",
     "rm": "node test/removeSomething/index.js",
-    "rmDir": "node test/removeEmptyDir/index.js"
+    "rmDir": "node test/removeEmptyDir/index.js",
+    "youtube": "node test/youtube/index.js"
   },
   "author": "forever-z-133",
   "dependencies": {
