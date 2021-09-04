@@ -26,7 +26,7 @@ const convert_reg = /(.*?)(add|\-|\_)(.*)/;
 function convertName(name) {
   if (!name) return '';
   return name.replace(convert_reg, (match, pre, add, next) => {
-    if (pre.length >= 5) pre = pre.replace(/(DB|HD|BD)$/i, '');
+    // if (pre.length >= 5) pre = pre.replace(/(DB|HD|BD)$/i, '');
     next = next.replace(/un$/i, '');
     return pre.toUpperCase() + '-' + addZero(next.toUpperCase(), 3);
   });

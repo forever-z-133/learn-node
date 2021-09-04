@@ -27,7 +27,8 @@
     "readline": "node test/readline/index.js",
     "rm": "node test/removeSomething/index.js",
     "rmDir": "node test/removeEmptyDir/index.js",
-    "youtube": "node test/youtube/index.js"
+    "youtube": "node test/youtube/index.js",
+    "concat": "node test/concatVideo/index.js"
   },
   "author": "forever-z-133",
   "dependencies": {

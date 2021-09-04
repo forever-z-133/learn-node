@@ -7,22 +7,21 @@
 const inquirer = require("inquirer");
 const spawn = require("cross-spawn");
 
-const output = 'C:/Users/61775/Desktop/%(title)s.%(ext)s';
+const output = 'C:/Users/61775/Desktop/';
+const outputFileName = `${output}%(title)s.%(ext)s`;
 
 (async function() {
   // const url = 'https://www.youtube.com/watch?v=PLiDghW8oE0';
   const url = await askForUrl();
   console.log('开始下载...');
-  const res = spawn.sync("cmd.exe", ["/c", `youtube-dl ${url} --proxy 127.0.0.1:9898 -f18 -o ${output}`]);
+  const res = spawn.sync("cmd.exe", ["/c", `youtube-dl ${url} --proxy 127.0.0.1:9898 -f18 -o ${outputFileName}`]);
   if (res.stderr) console.log(res.stderr.toString('utf8'));
-  else {
-    console.log('下载完成');
-    spawn.sync("cmd.exe", ["/c", `start ${output}`]);
-  }
+  console.log('下载完成');
+  spawn.sync("cmd.exe", ["/c", `start ${output}`]);
 })();
 
-// 询问是否清空文件夹，并操作
-async function askForUrl(dir) {
+// 询问要下载的 youtube 链接
+async function askForUrl() {
   const question = [
     {
       type: "input",
