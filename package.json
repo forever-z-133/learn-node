@@ -16,6 +16,7 @@
     "remove": "node mine/findNotGood/index.js",
     "rename": "node mine/rename/index.js",
     "same": "node mine/findSame/index.js",
+    "check": "node mine/check/index.js",
     "alert": "node test/alert/index.js",
     "bilibili": "node test/bilibili/index.js",
     "w3c": "node test/w3cplus/index.js",

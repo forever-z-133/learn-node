@@ -54,15 +54,30 @@ function getFilesArray(dir) {
 getFilesArray = useCache(getFilesArray);
 
 // 获取已下载的番号
+const mineDirs = ['E:\\bad', 'E:\\下载2', 'E:\\下载3', 'I:\\下载过', 'I:\\无码', 'I:\\有码', 'I:\\写真'];
 function hasDownload(dirs) {
   if (typeof dirs === 'string') dirs = [dirs];
-  dirs = dirs || ['E:\\bad', 'E:\\下载2', 'E:\\下载3', 'I:\\下载过', 'I:\\无码', 'I:\\有码', 'I:\\写真'];
+  dirs = dirs || mineDirs;
   return dirs.reduce((re, dir) => {
     const items = getFilesArray(dir);
     return re.concat(items);
   }, []);
 }
 hasDownload = useCache(hasDownload);
+
+const endReg = /[A-E]$/i;
+function covertDownloadToMap(has) {
+  return has.reduce((obj, item) => {
+    const key = item.name.replace(endReg, '');
+    if (obj.has(key)) {
+      obj.set(key, obj.get(key).concat(item));
+    } else {
+      obj.set(key, [item]);
+    }
+    return obj;
+  }, new Map());
+}
+covertDownloadToMap = useCache(covertDownloadToMap);
 
 /// 找到番号相似的文件数据
 function findSimilarNameFiles(name) {
@@ -77,6 +92,7 @@ module.exports = {
   convertName,
   getFilesArray,
   hasDownload,
+  covertDownloadToMap,
   findSimilarNameFiles,
   CodeFileItem,
 };

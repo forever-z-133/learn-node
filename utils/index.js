@@ -179,11 +179,13 @@ function readFile(url, callback) {
 
 // 使用函数结果缓存
 function useCache(fn) {
-  var cache = {};
+  var cache = new Map();
   return function () {
-    var key = arguments.length + Array.prototype.join.call(arguments, ',');
-    if (key in cache) return cache[key];
-    else return (cache[key] = fn.apply(this, arguments));
+    var key = arguments;
+    if (cache.has(key)) return cache.get(key);
+    const res = fn.apply(this, arguments);
+    cache.set(key, res);
+    return res;
   };
 }
 

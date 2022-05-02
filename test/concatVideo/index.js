@@ -15,7 +15,7 @@ const outputFileName = `${output}output.mp4`;
   if (res.stderr) console.log(res.stderr.toString('utf8'));
   fs.unlinkSync(inputFileName);
   console.log('合并完成');
-  spawn.sync("cmd.exe", ["/c", `start ${output}`]);
+  // spawn.sync("cmd.exe", ["/c", `start ${output}`]);
 })();
 
 // 询问要合并的视频名称，多个用 , 或 | 分割

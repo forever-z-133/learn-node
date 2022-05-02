@@ -6,9 +6,9 @@ const inquirer = require('inquirer');
 const { makeDirSync, addDataToUrl, forEachAsync } = require('../../utils/index.js');
 
 const baseUrl = 'https://www.w3cplus.com';
-const expire = 1603609570;
-const code = 'lLgbnA5Gq6Q';
-const sign = '5e66574a53e98663a58605bde47b1dab';
+const expire = 1640524156;
+const code = 'FbsWzMoPxg4';
+const sign = '79458f2dec5cdde336e04824eaf0cefa';
 const htmlFileDir = path.resolve(__dirname, 'temp');
 
 /**
@@ -60,10 +60,15 @@ async function doItMore(listUrl, callback) {
     forEachAsync(
       urls,
       async (i, _url, next) => {
-        await doIt(_url);
-        next();
+        try {
+          await doIt(_url);
+          next();
+        } catch(err) {
+          next();
+        }
       },
       {
+        number: 1,
         finish: () => {
           console.log('本页数据已全部下载完成');
           resolve();
@@ -96,7 +101,7 @@ async function doIt(url) {
 async function findArticleUrls(listUrl, callback) {
   const { data: html } = await axios.get(listUrl);
   const $ = cheerio.load(html);
-  const $urls = $('.node > .more > a');
+  const $urls = $('.node > h1 > a');
   const result = [];
   forEachDom($, $urls, ($url) => {
     const href = $url.attr('href');
@@ -128,7 +133,7 @@ function convertLinkHref($, $content) {
   const $links = $content.find('a');
   forEachDom($, $links, ($link) => {
     let href = $link.attr('href') || '';
-    href = addPrefix(src);
+    href = addPrefix(href);
     href = href.replace(/\/\/www.w3cplus.com\/[^/]+\//, './');
     $link.attr('href', href);
   });

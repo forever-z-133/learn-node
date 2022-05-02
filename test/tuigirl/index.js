@@ -11,12 +11,15 @@ require('../../test/consoleColor');
 const webBaseUrl = 'http://www.its99.com';
 const outputDir = path.resolve('F:\\tuigirl');
 
-const excludes = [];
+const excludes = [
+  'http://www.its99.com/luyilu/2016/0811/633/', // 仅第 19 页没图，20 页有，不好兼容
+  'http://www.its99.com/luyilu/2015/0630/383/', // 同上，42 页为空
+];
 
 (async function () {
   makeDirSync(outputDir);
 
-  await (async function loop(count = 1) {
+  await (async function loop(count = 6) {
     console.log('xxxxxxxxxxxxxxxxxxxxxxx ' + count);
     await downloadOneList(count);
     await loop(count + 1);
@@ -25,14 +28,13 @@ const excludes = [];
 
 // 下载一个列表
 async function downloadOneList(page = 1) {
-  const url = `${webBaseUrl}/page/${page}/?s=%E6%8E%A8%E5%A5%B3%E9%83%8E`;
+  const url = `${webBaseUrl}/page/${page}/?s=%E6%97%A0%E5%9C%A3%E5%85%89`;
   await loadUrlList(url, async (itemData, i) => {
     if (itemData === null) throw new Error('finish');
     // 处理列表的其中一条文章链接
     const { href: articleUrl, title } = itemData;
     if (excludes.includes(articleUrl)) return;
-    const cache = getFilesInDirSync(outputDir);
-    // if (isCachedArticle(title)) return console.log(`此链接已下载，则跳过 ${articleUrl}\n`);
+    if (isCachedArticle(title)) return console.log(`此链接已下载，则跳过 ${articleUrl}\n`);
     const articleTips = `开始处理文章 ${articleUrl} ${title}`.green;
     console.group(articleTips);
     let prevIndex = 0;
@@ -80,6 +82,7 @@ async function loadArticleUrl(articleUrl, func) {
     const url = count === 1 ? articleUrl : `${articleUrl}${count}/`;
     const data = await getOnePartData(url);
     if (!data) return; // 请求到最后一页
+    if (data.imgs.length < 1) return; // 该批没有图片，会漏掉后面的图但只能这样了
     if (func) {
       const res = await func(data, count - 1);
       isContinue = res === undefined ? true : res;
