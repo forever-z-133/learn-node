@@ -10,4 +10,4 @@ node_modules
 yarn.lock
 
 ## 测试相关
-__test__
+.coverage

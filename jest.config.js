@@ -18,7 +18,7 @@ module.exports = {
   // collectCoverageFrom: undefined,
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: "./__test__/coverage",
+  coverageDirectory: ".coverage",
 
   // An array of regexp pattern strings used to skip coverage collection
   coveragePathIgnorePatterns: [
@@ -168,9 +168,9 @@ module.exports = {
   // timers: "real",
 
   // A map from regular expressions to paths to transformers
-  // transform: {
-  //   '^.+\.(ts|tsx|js)$': 'ts-jest',
-  // },
+  transform: {
+    '\\.m?js$': 'babel-jest',
+  },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [

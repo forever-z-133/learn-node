@@ -1,3 +1,39 @@
+
+/**
+ * 判断类型
+ * @param {Any} obj 任何数据
+ * @returns string
+ */
+export const typeOf = obj => {
+  const typeStr = Object.prototype.toString.call(obj).split(' ')[1];
+  return typeStr.slice(0, typeStr.length - 1).toLowerCase();
+}
+
+/**
+ * 补零
+ * @param {Number} num 数字
+ * @param {Number} len 长度
+ * @returns number
+ */
+export const addZero = (num, len = 2) => {
+  let result = isNaN(num) ? '' : (num + '');
+  let numLen = result.length;
+  while (numLen++ < len) result = '0' + result;
+  return result;
+}
+
+/**
+ * 延时等待
+ * @param {Number} delay 等待时长，单位 ms
+ * @returns undefined
+ */
+export const sleep = (delay = 1000, cb) => new Promise(resolve => {
+  setTimeout(() => {
+    cb && cb();
+    resolve();
+  }, delay)
+});
+
 /**
  * 异步多线程
  * 通常用于同时发起请求，并控制并行的请求数量
@@ -27,8 +63,8 @@ export const forEachAsync = (list, func, options) => new Promise(resolve => {
     loaded += 1;
     restThread += 1;
     result[index] = res;
-    if (loaded < total) return loop();
-    resolve(result);
+    if (loaded < total) loop();
+    else resolve(result);
   }
 
   const loop = () => {
@@ -43,6 +79,3 @@ export const forEachAsync = (list, func, options) => new Promise(resolve => {
 
   loop();
 });
-
-
-
