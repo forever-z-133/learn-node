@@ -7,4 +7,7 @@ test/w3cplus/temp
 
 ## npm 相关
 node_modules
-package-lock.json
+yarn.lock
+
+## 测试相关
+__test__

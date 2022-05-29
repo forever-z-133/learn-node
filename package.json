@@ -6,36 +6,23 @@
     "type": "git",
     "url": "git+https://github.com/forever-z-133/learn-node.git"
   },
+  "packageManager": "yarn@1.22.17",
   "bin": {
-    "zyh-node-2": "./.bin/cli.js"
+    "foreverZ": ".bin/cli.mjs"
   },
-  "main": "./utils/index.js",
+  "main": ".bin/index.mjs",
   "scripts": {
-    "exist": "node mine/findExist/index.js",
-    "find": "node mine/findNotDownload/index.js",
-    "remove": "node mine/findNotGood/index.js",
-    "rename": "node mine/rename/index.js",
-    "same": "node mine/findSame/index.js",
-    "check": "node mine/check/index.js",
-    "alert": "node test/alert/index.js",
-    "bilibili": "node test/bilibili/index.js",
-    "w3c": "node test/w3cplus/index.js",
-    "tui": "node test/tuigirl/index.js",
-    "color": "node test/consoleColor/index.js test",
-    "mp4": "node test/m3u8ToMp4/index.js",
-    "mp42": "node test/m3u8ToMp4ByFfmpeg/index.js",
-    "font": "node test/previewFont/index.js",
-    "readline": "node test/readline/index.js",
-    "rm": "node test/removeSomething/index.js",
-    "rmDir": "node test/removeEmptyDir/index.js",
-    "youtube": "node test/youtube/index.js",
-    "concat": "node test/concatVideo/index.js"
+    "command": "node ./.bin/cli.mjs",
+    "test": "jest"
   },
   "author": "forever-z-133",
-  "dependencies": {
-    "axios": "^0.21.1",
-    "cheerio": "^1.0.0-rc.3",
-    "cross-spawn": "^7.0.0",
-    "inquirer": "^7.0.0"
+  "license": "ISC",
+  "devDependencies": {
+    "axios": "^0.27.2",
+    "cheerio": "^1.0.0-rc.11",
+    "cross-spawn": "^7.0.3",
+    "fs-extra": "^10.1.0",
+    "inquirer": "^8.2.4",
+    "jest": "^28.1.0"
   }
 }
