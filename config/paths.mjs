@@ -13,7 +13,7 @@ export default {
   color: resolve('test/consoleColor/index.js test'),
   mp4: resolve('test/m3u8ToMp4/index.js'),
   mp42: resolve('test/m3u8ToMp4ByFfmpeg/index.js'),
-  font: resolve('test/previewFont/index.js'),
+  font: resolve('test/previewFont/entry.mjs'),
   readline: resolve('test/readline/index.js'),
   rm: resolve('test/removeSomething/index.js'),
   rmDir: resolve('test/removeEmptyDir/index.js'),

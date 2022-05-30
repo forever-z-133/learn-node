@@ -35,6 +35,22 @@ export const sleep = (delay = 1000, cb) => new Promise(resolve => {
 });
 
 /**
+ * 根据循环方法将数组拆为两份，符合的放前面
+ * @param {*} array 数组
+ * @param {*} callback 循环方法
+ * @returns array
+ */
+export const divideArray = (array, callback) => {
+  const template = [[], []];
+  if (!callback || typeOf(callback) !== 'function') return template;
+  return array.reduce((res, item, index) => {
+    const match = callback(item, index);
+    match ? res[0].push(item) : res[1].push(item);
+    return res;
+  }, template);
+}
+
+/**
  * 异步多线程
  * 通常用于同时发起请求，并控制并行的请求数量
  *

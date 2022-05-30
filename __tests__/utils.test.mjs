@@ -2,6 +2,7 @@ import {
   typeOf,
   addZero,
   sleep,
+  divideArray,
   forEachAsync,
 } from '../utils/index.mjs';
 
@@ -36,6 +37,17 @@ describe('utils/index.mjs', () => {
     jest.advanceTimersByTime(1000);
     expect(callback).toBeCalled();
     expect(callback).toHaveBeenCalledTimes(1);
+  });
+
+  test('divideArray', () => {
+    const array = [1, 2, 3, 4, 5];
+    const result1 = [1, 2];
+    const result2 = [3, 4, 5];
+    const forEachCallback = item => item < 3;
+    const [r1, r2] = divideArray(array, forEachCallback);
+    expect(divideArray(array)).toStrictEqual([[], []]);
+    expect(r1).toStrictEqual(result1);
+    expect(r2).toStrictEqual(result2);
   });
 
   test('forEachAsync', () => {
