@@ -10,6 +10,6 @@ const isNetFile = url => {
 }
 
 const getTempFile = async url => {
-
+  return path.normalize(url);
 }
 export default getTempFile;

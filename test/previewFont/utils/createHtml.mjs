@@ -31,8 +31,18 @@ const createStyleHtml = fontUrl => {
   <link rel="stylesheet" href="${fontUrl}" />
   <style>
   .font-icon-list { overflow: hidden; }
-  .font-icon-list-item { float:left;margin-right:20px; }
+  .font-icon-list-item { float:left; margin-right:20px; text-align: center }
   </style>
+  `;
+}
+
+// 生产单个图标项
+const createFontItemHtml = icon => {
+  return `
+  <div class="font-icon-list-item">
+    <i class="${icon.family} ${icon.name}"></i>
+    <p>${icon.name}</p>
+  </div>
   `;
 }
 
@@ -44,12 +54,7 @@ const createBodyHtml = fontIconsMap => {
     result += `
       <h1>${fontFamily}</h1>
       <div class="font-icon-list">
-        ${icons.map(icon => `
-        <div class="font-icon-list-item">
-          <i class="${icon.family} ${icon.name}"></i>
-          <p>${icon.name}</p>
-        </div>
-        `)}
+        ${icons.map(createFontItemHtml).join('')}
       </div>
     `
   })

@@ -3,6 +3,10 @@ import {
   addZero,
   sleep,
   divideArray,
+  stringToObject,
+  camelize,
+  camelizeKeys,
+  getPureUrl,
   forEachAsync,
 } from '../utils/index.mjs';
 
@@ -48,6 +52,42 @@ describe('utils/index.mjs', () => {
     expect(divideArray(array)).toStrictEqual([[], []]);
     expect(r1).toStrictEqual(result1);
     expect(r2).toStrictEqual(result2);
+  });
+  
+  test('stringToObject', () => {
+    expect(stringToObject('')).toStrictEqual({});
+    expect(stringToObject('a=1')).toStrictEqual({a:'1'});
+    expect(stringToObject('a=1&b=2')).toStrictEqual({a:'1',b:'2'});
+    expect(stringToObject('a=&b=2')).toStrictEqual({a:'',b:'2'});
+    expect(stringToObject('a=undefined&b=2')).toStrictEqual({a:undefined,b:'2'});
+    expect(stringToObject('a=null&b=2')).toStrictEqual({a:undefined,b:'2'});
+    expect(stringToObject('a=true&b=2')).toStrictEqual({a:true,b:'2'});
+    expect(stringToObject('a=false&b=2')).toStrictEqual({a:false,b:'2'});
+    expect(stringToObject('a:1;b:2',';',':')).toStrictEqual({a:'1',b:'2'});
+    expect(stringToObject('a=1=1&b=2')).toStrictEqual({a:'1=1',b:'2'});
+    expect(stringToObject('&b=2')).toStrictEqual({b:'2'});
+    expect(stringToObject('=1&b=2')).toStrictEqual({b:'2'});
+  });
+
+  test('camelize', () => {
+    expect(camelize()).toBe('');
+    expect(camelize('abc')).toBe('abc');
+    expect(camelize('font-')).toBe('font-');
+    expect(camelize('font-size')).toBe('fontSize');
+  });
+  
+  test('camelizeKeys', () => {
+    expect(camelizeKeys()).toStrictEqual({});
+    expect(camelizeKeys({'font-size':'10px'})).toStrictEqual({'fontSize':'10px'});
+  });
+  
+  test('getPureUrl', () => {
+    expect(getPureUrl()).toBe('');
+    expect(getPureUrl('index.html')).toBe('index.html');
+    expect(getPureUrl('index.html?x=1')).toBe('index.html');
+    expect(getPureUrl('index.html#hash')).toBe('index.html');
+    expect(getPureUrl('index.html?x=1#hash')).toBe('index.html');
+    expect(getPureUrl('index.html?#hash')).toBe('index.html');
   });
 
   test('forEachAsync', () => {

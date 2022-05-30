@@ -51,6 +51,76 @@ export const divideArray = (array, callback) => {
 }
 
 /**
+ * 键值对字符串转为对象
+ * a=1&b=2 转为 {a:'1',b:'2'}
+ * @param {String} str 源字符串
+ * @param {String} divide 键值对分割符
+ * @param {String} concat 键值对赋值符
+ * @returns object
+ */
+export const stringToObject = (str, divide = '&', concat = '=') => {
+  if (!str || typeof str !== 'string') return {};
+  
+  const array = str.split(divide);
+  const result = {};
+
+  array.forEach(item => {
+    if (!item) return;
+
+    const temp = item.split(concat);
+    const key = temp.shift().trim();
+    let value = temp.join(concat).trim();
+
+    if (!key) return;
+    
+    if (['null', 'undefined'].includes(value)) value = undefined;
+    if (value === 'true') value = true;
+    if (value === 'false') value = false;
+
+    result[key] = value;
+  });
+
+  return result;
+}
+
+/**
+ * 连字符转驼峰
+ * 比如 font-size 返回 fontSize
+ * @param {String} str 字符串
+ * @returns string
+ */
+export const camelize = str => {
+  if (!str || typeof str !== 'string') return '';
+  return str.toLowerCase().replace(/-(\w)/g, (_, s) => s.toUpperCase());
+}
+
+/**
+ * 对象中的 key 转为驼峰
+ * 比如 {'font-size':1} 返回 {fontSize:1}
+ * @param {Object} obj 
+ * @returns object
+ */
+export const camelizeKeys = obj => {
+  const result = {};
+  if (!obj) return result;
+  Object.keys(obj).forEach(k => {
+    const key = camelize(k);
+    result[key] = obj[k];
+  });
+  return result;
+}
+
+/**
+ * 去掉路径中参数，比如 x.js?t=1 返回 x.js
+ * @param {String} url 
+ * @returns string
+ */
+export const getPureUrl = url => {
+  if (!url || typeof url !== 'string') return '';
+  return url.split(/\?|#/)[0];
+}
+
+/**
  * 异步多线程
  * 通常用于同时发起请求，并控制并行的请求数量
  *
