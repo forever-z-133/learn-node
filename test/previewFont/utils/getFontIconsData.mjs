@@ -1,5 +1,10 @@
 import { camelizeKeys, stringToObject } from '../../../utils/index.mjs';
 
+const contentReg = /content:\s*?(["'])\\.+?\1/;
+
+// 样式值里面是否存在图标内容，比如 content:'\e632'
+const hasIconContent = str => contentReg.test(str);
+
 /**
  * 获取图标数据
  * @param {Array} cssRules 样式键值对
@@ -18,7 +23,7 @@ const getFontIconsData = (cssRules, familyData, defaultKey) => {
   const iconPrevClassAttrs = iconPrevClassRules.map(e => camelizeKeys(stringToObject(e.value, ';', ':')));
 
   // 在有 content 的类中，找到带字体类名的图标类，比如 .glyphicon-plus
-  const hasContentRules = cssRules.filter(e => /content:\s*?(["'])\\.+?\1/.test(e.value));
+  const hasContentRules = cssRules.filter(e => hasIconContent(e.value));
   hasContentRules.forEach(({ key }) => {
     const name = key.split(':')[0].slice(1);
     const matchIndex = defaultKey ? 0 : iconPrevClassNames.findIndex(n => name.includes(n));

@@ -1,16 +1,4 @@
-import { camelizeKeys, getPureUrl, stringToObject } from '../../../utils/index.mjs';
-
-const fontUrlReg = /url\(["'](.*?)["']\)/g;
-
-// 把 @font-face 中的 src 转为数组
-export const getFontUrls = src => {
-  const result = [];
-  src.replace(fontUrlReg, (_, u) => {
-    const url = getPureUrl(u);
-    result.push(url);
-  });
-  return result;
-};
+import { camelizeKeys, stringToObject } from '../../../utils/index.mjs';
 
 /**
  * 获取字体的数据
