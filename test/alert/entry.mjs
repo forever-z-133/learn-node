@@ -11,7 +11,7 @@ export const ALERT_TYPES = {
 const entry = async () => {
   const type = await ask();
   run(type);
-}
+};
 
 async function ask() {
   const answer = await inquirer.prompt([

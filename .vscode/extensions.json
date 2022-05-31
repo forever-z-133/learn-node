@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "streetsidesoftware.code-spell-checker",
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
+    "ybaumes.highlight-trailing-white-spaces",
+    "ionutvmi.path-autocomplete",
+    "Gruntfuggly.todo-tree"
+  ]
+}

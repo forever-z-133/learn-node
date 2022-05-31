@@ -53,7 +53,7 @@ describe('utils/index.mjs', () => {
     expect(r1).toStrictEqual(result1);
     expect(r2).toStrictEqual(result2);
   });
-  
+
   test('stringToObject', () => {
     expect(stringToObject('')).toStrictEqual({});
     expect(stringToObject('a=1')).toStrictEqual({a:'1'});
@@ -75,12 +75,12 @@ describe('utils/index.mjs', () => {
     expect(camelize('font-')).toBe('font-');
     expect(camelize('font-size')).toBe('fontSize');
   });
-  
+
   test('camelizeKeys', () => {
     expect(camelizeKeys()).toStrictEqual({});
     expect(camelizeKeys({'font-size':'10px'})).toStrictEqual({'fontSize':'10px'});
   });
-  
+
   test('getPureUrl', () => {
     expect(getPureUrl()).toBe('');
     expect(getPureUrl('index.html')).toBe('index.html');
@@ -100,7 +100,7 @@ describe('utils/index.mjs', () => {
         callback && callback();
         next(index);
       }, Math.random() * 200);
-    }
+    };
     expect(callback).not.toBeCalled();
     forEachAsync(array, forEachCallback).then(res => {
       expect(res).toStrictEqual(result);

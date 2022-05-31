@@ -29,5 +29,5 @@ const getFontIconsData = (cssRules, familyData) => {
   });
 
   return result;
-}
+};
 export default getFontIconsData;

@@ -41,7 +41,7 @@ const run = async url => {
   fs.writeFileSync(outputPath, html, 'utf8');
 
   // 用浏览器打开 html
-  spawn.sync("cmd.exe", ["/c", `start ${outputPath}`]);
-}
+  spawn.sync('cmd.exe', ['/c', `start ${outputPath}`]);
+};
 
 export default run;

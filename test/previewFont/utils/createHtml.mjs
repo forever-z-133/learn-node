@@ -23,7 +23,7 @@ ${bodyHtml}
 </body>
 </html>
   `;
-}
+};
 
 // 生成 style html
 const createStyleHtml = fontUrl => {
@@ -34,7 +34,7 @@ const createStyleHtml = fontUrl => {
   .font-icon-list-item { float:left; margin-right:20px; text-align: center }
   </style>
   `;
-}
+};
 
 // 生产单个图标项
 const createFontItemHtml = icon => {
@@ -44,7 +44,7 @@ const createFontItemHtml = icon => {
     <p>${icon.name}</p>
   </div>
   `;
-}
+};
 
 // 生成 body html
 const createBodyHtml = fontIconsMap => {
@@ -56,10 +56,10 @@ const createBodyHtml = fontIconsMap => {
       <div class="font-icon-list">
         ${icons.map(createFontItemHtml).join('')}
       </div>
-    `
-  })
+    `;
+  });
   return result;
-}
+};
 
 /**
  * 生成可预览字体图标的 html 页面
@@ -72,5 +72,5 @@ const createHTML = (fontUrl, fontIconsMap) => {
   const bodyHtml = createBodyHtml(fontIconsMap);
   const html = createPageHtml(styleHtml, bodyHtml);
   return html;
-}
+};
 export default createHTML;

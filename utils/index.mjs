@@ -7,7 +7,7 @@
 export const typeOf = obj => {
   const typeStr = Object.prototype.toString.call(obj).split(' ')[1];
   return typeStr.slice(0, typeStr.length - 1).toLowerCase();
-}
+};
 
 /**
  * 补零
@@ -20,7 +20,7 @@ export const addZero = (num, len = 2) => {
   let numLen = result.length;
   while (numLen++ < len) result = '0' + result;
   return result;
-}
+};
 
 /**
  * 延时等待
@@ -31,7 +31,7 @@ export const sleep = (delay = 1000, cb) => new Promise(resolve => {
   setTimeout(() => {
     cb && cb();
     resolve();
-  }, delay)
+  }, delay);
 });
 
 /**
@@ -48,7 +48,7 @@ export const divideArray = (array, callback) => {
     match ? res[0].push(item) : res[1].push(item);
     return res;
   }, template);
-}
+};
 
 /**
  * 键值对字符串转为对象
@@ -60,7 +60,7 @@ export const divideArray = (array, callback) => {
  */
 export const stringToObject = (str, divide = '&', concat = '=') => {
   if (!str || typeof str !== 'string') return {};
-  
+
   const array = str.split(divide);
   const result = {};
 
@@ -72,7 +72,7 @@ export const stringToObject = (str, divide = '&', concat = '=') => {
     let value = temp.join(concat).trim();
 
     if (!key) return;
-    
+
     if (['null', 'undefined'].includes(value)) value = undefined;
     if (value === 'true') value = true;
     if (value === 'false') value = false;
@@ -81,7 +81,7 @@ export const stringToObject = (str, divide = '&', concat = '=') => {
   });
 
   return result;
-}
+};
 
 /**
  * 连字符转驼峰
@@ -92,12 +92,12 @@ export const stringToObject = (str, divide = '&', concat = '=') => {
 export const camelize = str => {
   if (!str || typeof str !== 'string') return '';
   return str.toLowerCase().replace(/-(\w)/g, (_, s) => s.toUpperCase());
-}
+};
 
 /**
  * 对象中的 key 转为驼峰
  * 比如 {'font-size':1} 返回 {fontSize:1}
- * @param {Object} obj 
+ * @param {Object} obj
  * @returns object
  */
 export const camelizeKeys = obj => {
@@ -108,17 +108,17 @@ export const camelizeKeys = obj => {
     result[key] = obj[k];
   });
   return result;
-}
+};
 
 /**
  * 去掉路径中参数，比如 x.js?t=1 返回 x.js
- * @param {String} url 
+ * @param {String} url
  * @returns string
  */
 export const getPureUrl = url => {
   if (!url || typeof url !== 'string') return '';
   return url.split(/\?|#/)[0];
-}
+};
 
 /**
  * 异步多线程
@@ -151,7 +151,7 @@ export const forEachAsync = (list, func, options) => new Promise(resolve => {
     result[index] = res;
     if (loaded < total) loop();
     else resolve(result);
-  }
+  };
 
   const loop = () => {
     count += 1;
@@ -161,7 +161,7 @@ export const forEachAsync = (list, func, options) => new Promise(resolve => {
     func(item, index, next(index));
     restThread -= 1;
     if (restThread > 0) loop();
-  }
+  };
 
   loop();
 });

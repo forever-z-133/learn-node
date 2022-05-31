@@ -6,7 +6,7 @@ const getPureCssContent = cssContent => {
   result = result.replace(/\s*[\t\n]\s*/g, ''); // 去掉换行
   result = result.replace(/\/\*.*?\*\//g, ''); // 去除注释
   return result;
-}
+};
 
 /**
  * 将 css 文件内容转变为数组
@@ -17,7 +17,7 @@ function getCssRules(cssContent) {
   if (!cssContent) return [];
 
   const str = getPureCssContent(cssContent);
-  const cssRuleReg = /(?<=^|}|{)\s*([^}{]*?)\s*{(([^}]*?{.*?})|([a-z\-]*?:.*?(?=;|}))*)}/g; // exec 需要重置所以放在函数内部
+  const cssRuleReg = /(?<=^|}|{)\s*([^}{]*?)\s*{(([^}]*?{.*?})|([a-z-]*?:.*?(?=;|}))*)}/g; // exec 需要重置所以放在函数内部
   const result = [];
 
   let temp = [];

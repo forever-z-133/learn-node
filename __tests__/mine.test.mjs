@@ -1,4 +1,4 @@
-import { 
+import {
   getCodeName,
   convertCodeName,
 } from '../utils/mine.mjs';

@@ -10,7 +10,7 @@ export const getFontUrls = src => {
     result.push(url);
   });
   return result;
-}
+};
 
 /**
  * 获取字体的数据
@@ -27,6 +27,6 @@ const getFontFamilyData = familyRules => {
   });
 
   return result;
-}
+};
 
 export default getFontFamilyData;
