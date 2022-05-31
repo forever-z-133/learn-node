@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import spawn from 'cross-spawn';
 import { getThisDir } from '../../utils/paths.mjs';
 import { divideArray } from '../../utils/index.mjs';
-import getTempFile from './utils/getTempFile.mjs';
+import getTempFile, { isNetFile } from './utils/getTempFile.mjs';
 import getCssRules from './utils/getCssRules.mjs';
 import getFontFamilyData from './utils/getFontFamilyData.mjs';
 import getFontIconsData from './utils/getFontIconsData.mjs';
@@ -13,7 +13,7 @@ const thisPath = getThisDir();
 const outputDir = path.join(thisPath, 'temp');
 const outputPath = path.join(outputDir, 'index.html');
 
-const run = async url => {
+const run = async (url, defaultKey = '') => {
 
   // 读取 css 文件内容
   const cssUrl = await getTempFile(url);
@@ -25,7 +25,7 @@ const run = async url => {
   // 根据数组抽离所需数据
   const [familyRules, restRules] = divideArray(cssRules, e => e.key.includes('@font-face'));
   const familyData = getFontFamilyData(familyRules);
-  const iconsData = getFontIconsData(restRules, familyData);
+  const iconsData = getFontIconsData(restRules, familyData, defaultKey);
   const fontIconsMap = familyData.reduce((res, { fontFamily }) => {
     const icons = iconsData.filter(e => e.fontFamily === fontFamily);
     res[fontFamily] = icons;
@@ -33,7 +33,7 @@ const run = async url => {
   }, {});
 
   // 按照数据生成 html 字符串
-  const relativeCssUrl = path.relative(outputDir, cssUrl);
+  const relativeCssUrl = isNetFile(url) ? url : path.relative(outputDir, cssUrl);
   const html = createHTML(relativeCssUrl, fontIconsMap);
 
   // 生成 html 文件
