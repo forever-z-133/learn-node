@@ -13,6 +13,8 @@ const thisPath = getThisDir();
 const outputDir = path.join(thisPath, 'temp');
 const outputPath = path.join(outputDir, 'index.html');
 
+fs.emptyDirSync(outputDir);
+
 const run = async (url, defaultKey = '') => {
 
   // 读取 css 文件内容

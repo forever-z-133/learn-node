@@ -22,7 +22,10 @@ module.exports = {
 
   // An array of regexp pattern strings used to skip coverage collection
   coveragePathIgnorePatterns: [
-    '/node_modules/'
+    '/node_modules/',
+    '<rootDir>/test/',
+    '<rootDir>/mine/',
+    '<rootDir>/utils/paths.mjs',
   ],
 
   // Indicates which provider should be used to instrument code for coverage

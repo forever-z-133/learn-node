@@ -25,6 +25,7 @@ module.exports = {
     'no-multi-spaces': 2,
     'no-trailing-spaces': 2,
     'no-unused-vars': 1,
+    'eol-last': 2,
     'arrow-parens': [2, 'as-needed'],
     'indent': [2, 2, { 'SwitchCase': 1 }],
   },
