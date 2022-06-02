@@ -3,6 +3,9 @@ import inquirer from 'inquirer';
 import { throwError } from '../../utils/others.mjs';
 import run from './index.mjs';
 
+
+// 比如删除目录中的 .bak .orig .DS_store 等文件（软删除）
+
 let inputDir = process.argv[2];
 let inputFlags = process.argv[3];
 if (inputFlags && inputFlags.trim().length) {
