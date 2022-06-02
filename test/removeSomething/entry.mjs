@@ -3,7 +3,19 @@ import inquirer from 'inquirer';
 import { throwError } from '../../utils/others.mjs';
 import run from './index.mjs';
 
+let inputDir = process.argv[2];
+let inputFlags = process.argv[3];
+if (inputFlags && inputFlags.trim().length) {
+  inputFlags = inputFlags.trim().split(',');
+}
+
+if (inputDir && !inputFlags && !/^[C-H]:\\/.test(inputDir)) { // 兼容只传了 flags 的情况
+  inputFlags = inputDir.trim().split(',');
+  inputDir = undefined;
+}
+
 const askForDir = async () => {
+  if (inputDir) return inputDir;
   const result = await inquirer.prompt([
     {
       type: 'input',
@@ -16,6 +28,7 @@ const askForDir = async () => {
 };
 
 const askForFlags = async () => {
+  if (inputFlags) return inputFlags;
   const result = await inquirer.prompt([
     {
       type: 'input',

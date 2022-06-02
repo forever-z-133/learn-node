@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { exec } from 'child_process';
+import spawn from 'cross-spawn';
 import { getThisDir } from '../../utils/paths.mjs';
 import { ALERT_TYPES } from './entry.mjs';
 
@@ -23,21 +23,20 @@ function vbAlert(content, title) {
   const vbsFilePath = path.join(thisPath, 'temp.vbs');
   const command = `msgbox "${content}", vbOKOnly, "${title}"`;
   fs.writeFileSync(vbsFilePath, command);
-  exec(vbsFilePath, () => {
-    fs.unlinkSync(vbsFilePath);
-  });
+  spawn.sync(vbsFilePath);
+  fs.unlinkSync(vbsFilePath);
 }
 
 // ActiveXObject 的弹窗
 function axoAlert(content, title) {
   const command = `mshta "javascript: var sh=new ActiveXObject("WScript.Shell"); sh.Popup("${content}", 10, "${title}", 64); close(); "`;
-  exec(command);
+  spawn.sync(command);
 }
 
 // msg.exe 的弹窗，有的系统没有此方法
 function msgAlert(content, title) {
   title;
-  exec(`msg * "${content}"`); // 没办法设标题
+  spawn.sync(`msg * "${content}"`); // 没办法设标题
 }
 
 // Electron 的弹窗，体积较大

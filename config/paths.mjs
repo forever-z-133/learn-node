@@ -16,7 +16,7 @@ export default {
   font: resolve('test/previewFont/entry.mjs'),
   readline: resolve('test/readline/index.js'),
   rm: resolve('test/removeSomething/entry.mjs'),
-  rmDir: resolve('test/removeEmptyDir/index.js'),
+  rmDir: resolve('test/removeEmptyDir/entry.mjs'),
   youtube: resolve('test/youtube/index.js'),
   concat: resolve('test/concatVideo/index.js'),
   notify: resolve('test/sendNotify/index.mjs'),

@@ -22,16 +22,18 @@ export const download = (url, output) => new Promise((resolve, reject) => {
 });
 
 // 递归所有的文件，注意先遍历到的是最内部的文件
-export function forEachDir(dir, dirCallback, fileCallback) {
+const ignoreDirs = ['node_modules'];
+export function forEachDir(dir, fileCallback, dirCallback) {
   const files = fs.readdirSync(dir);
   files.forEach(file => {
+    if (ignoreDirs.includes(file)) return;
     const uri = path.join(dir, file);
-    if (fs.statSync(uri).isDirectory()) {
-      // 如果自己是文件夹，则先继续递归，然后再处理自身
-      forEachDir(uri, dirCallback, fileCallback);
-      dirCallback && dirCallback(uri);
-    } else {
+    const isDirectory = fs.statSync(uri).isDirectory();
+    if (!isDirectory) {
       fileCallback && fileCallback(uri);
+    } else {
+      forEachDir(uri, fileCallback, dirCallback);
+      dirCallback && dirCallback(uri);
     }
   });
 }
