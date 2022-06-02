@@ -1,3 +1,4 @@
+import fs from 'fs-extra';
 import path from 'path';
 import spawn from 'cross-spawn';
 
@@ -19,3 +20,18 @@ export const download = (url, output) => new Promise((resolve, reject) => {
     reject(err);
   }
 });
+
+// 递归所有的文件，注意先遍历到的是最内部的文件
+export function forEachDir(dir, dirCallback, fileCallback) {
+  const files = fs.readdirSync(dir);
+  files.forEach(file => {
+    const uri = path.join(dir, file);
+    if (fs.statSync(uri).isDirectory()) {
+      // 如果自己是文件夹，则先继续递归，然后再处理自身
+      forEachDir(uri, dirCallback, fileCallback);
+      dirCallback && dirCallback(uri);
+    } else {
+      fileCallback && fileCallback(uri);
+    }
+  });
+}

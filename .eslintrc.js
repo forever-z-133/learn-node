@@ -28,5 +28,6 @@ module.exports = {
     'eol-last': 2,
     'arrow-parens': [2, 'as-needed'],
     'indent': [2, 2, { 'SwitchCase': 1 }],
+    'no-empty': [2, { 'allowEmptyCatch': true }]
   },
 };
