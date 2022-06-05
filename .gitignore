@@ -1,10 +1,5 @@
 ## 临时文件
-test/concatVideo/temp
-test/m3u8ToMp4/temp
-test/m3u8ToMp4/new.ts
-test/json/temp.json
-test/previewFont/temp
-test/w3cplus/temp
+**/temp/
 
 ## npm 相关
 node_modules
