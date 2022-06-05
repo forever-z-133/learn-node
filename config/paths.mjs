@@ -18,6 +18,6 @@ export default {
   rm: resolve('test/removeSomething/entry.mjs'),
   rmDir: resolve('test/removeEmptyDir/entry.mjs'),
   youtube: resolve('test/youtube/index.js'),
-  concat: resolve('test/concatVideo/index.js'),
+  concat: resolve('test/concatVideo/entry.mjs'),
   notify: resolve('test/sendNotify/index.mjs'),
 };
