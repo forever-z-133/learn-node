@@ -1,4 +1,4 @@
-import { addZero } from './index.mjs';
+import { isNumberString, addZero } from './index.mjs';
 
 const d_d_reg = /\d{4,}[-_]\d{3,}\w*/; // 匹配 110313-691
 const w_d_reg = /\d{0,2}\w+[-_]\w?\d{2,}[a-eA-E]?/; // 匹配 MKBD-S60 RED-195 21ID-008 RED-195A
@@ -22,10 +22,20 @@ export const getCodeName = link => {
  *
  * Example: snisadd432un 转为 SNIS-432
  */
+const codeNameDivideReg = /add|-|_/;
+const codeNamePartReg = /^(S)?(\d{2,7})(un)?(_(\d))?([A-E])?/;
 export const convertCodeName = name => {
   if (!name) return '';
-  const [p, n] = name.split(/add|-|_/);
+  const [p, n, e] = name.split(codeNameDivideReg);
+  if (!n) return p;
   const prev = p.toLocaleUpperCase();
-  const next = addZero(n.replace(/un$/, '').toLocaleUpperCase(), 3);
+  const temp = e && isNumberString(e) ? [n, e].join('_') : n;
+  const next = temp.replace(codeNamePartReg, (_, a, b, c, d, e, f) => {
+    const prefix = a ? a.toLocaleUpperCase() : '';
+    const num = addZero(b, 3 - prefix.length);
+    const linePart = e ? String.fromCodePoint(+e + 64) : '';
+    const charPart = f ? f.toLocaleUpperCase() : '';
+    return `${prefix}${num}${linePart}${charPart}`;
+  });
   return `${prev}-${next}`;
 };

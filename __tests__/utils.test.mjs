@@ -1,5 +1,6 @@
 import {
   typeOf,
+  isNumberString,
   addZero,
   sleep,
   divideArray,
@@ -24,6 +25,14 @@ describe('utils/index.mjs', () => {
     expect(typeOf(() => {})).toBe('function');
     expect(typeOf(/x/)).toBe('regexp');
     expect(typeOf(new Date)).toBe('date');
+  });
+
+  test('isNumberString', () => {
+    expect(isNumberString()).toBe(false);
+    expect(isNumberString('')).toBe(false);
+    expect(isNumberString('1x')).toBe(false);
+    expect(isNumberString('x1')).toBe(false);
+    expect(isNumberString('12')).toBe(true);
   });
 
   test('addZero', () => {

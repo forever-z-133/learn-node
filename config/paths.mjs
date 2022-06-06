@@ -6,7 +6,7 @@ export default {
   remove: resolve('mine/findNotGood/index.js'),
   rename: resolve('mine/rename/index.js'),
   same: resolve('mine/findSame/index.js'),
-  check: resolve('mine/check/index.js'),
+  check: resolve('mine/check/index.mjs'),
   alert: resolve('test/alert/entry.mjs'),
   w3c: resolve('test/w3cplus/index.js'),
   color: resolve('test/consoleColor/index.js test'),

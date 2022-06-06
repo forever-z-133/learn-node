@@ -10,6 +10,15 @@ export const typeOf = obj => {
 };
 
 /**
+ * 判断是否为数字字符串
+ * @param {String} str 字符串
+ * @returns boolean
+ */
+export const isNumberString = str => {
+  return parseInt(str, 10).toString() === str;
+};
+
+/**
  * 补零
  * @param {Number} num 数字
  * @param {Number} len 长度

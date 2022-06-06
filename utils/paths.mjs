@@ -48,7 +48,11 @@ export const hasDownload = dirs => {
   dirs = dirs || mineDirs;
   return dirs.reduce((re, dir) => {
     const f = fs.readdirSync(dir) || [];
-    const files = f.map(file => path.format(file));
+    const files = f.map(file => {
+      const data = path.parse(file);
+      const { base, ext, name } = data;
+      return { base, ext, name, dir, path: path.join(dir, base) };
+    });
     return re.concat(files);
   }, []);
 };

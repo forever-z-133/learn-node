@@ -22,6 +22,12 @@ describe('utils/mine.mjs', () => {
   test('convertCodeName', () => {
     expect(convertCodeName()).toBe('');
     expect(convertCodeName('snisadd432un')).toBe('SNIS-432');
+    expect(convertCodeName('SCOP-219A')).toBe('SCOP-219A');
+    expect(convertCodeName('043015-001_1')).toBe('043015-001A');
     expect(convertCodeName('CWP-07')).toBe('CWP-007');
+    expect(convertCodeName('x188')).toBe('x188');
+    expect(convertCodeName('HEYZO-0016')).toBe('HEYZO-0016');
+    expect(convertCodeName('MKBD-S03')).toBe('MKBD-S03');
+    expect(convertCodeName('FC2-1174921A')).toBe('FC2-1174921A');
   });
 });
