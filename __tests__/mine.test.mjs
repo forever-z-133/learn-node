@@ -5,6 +5,7 @@ import {
 
 describe('utils/mine.mjs', () => {
   test('getCodeName', () => {
+    expect(getCodeName()).toBe('');
     expect(getCodeName('magnet:?xt=urn:btih:1FCA463D025EEF66ABCBA7DE7A43EBF499524607')).toBe('');
     expect(getCodeName('magnet:?xt=urn:btih:C9783513AB69C537F8C76064987B0C2EFBCF3A06&dn=CADV-353_B.wmv')).toBe('CADV-353');
     expect(getCodeName('magnet:?xt=urn:btih:B63E2876ADB3869E7EB07EE9DF7CC5E08421A81B&dn=LAFBD-40-BD')).toBe('LAFBD-40');

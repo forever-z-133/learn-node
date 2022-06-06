@@ -12,6 +12,8 @@
   },
   "main": ".bin/index.mjs",
   "scripts": {
+    "prepare": "husky install",
+    "cz": "git cz",
     "command": "node ./.bin/cli.mjs",
     "lint": "./node_modules/.bin/eslint --ext js,mjs ./",
     "lint:fix": "./node_modules/.bin/eslint --ext js,mjs --fix ./",
@@ -25,10 +27,13 @@
     "axios": "^0.27.2",
     "babel-jest": "^28.1.0",
     "cheerio": "^1.0.0-rc.11",
+    "commitizen": "^4.2.4",
     "cross-spawn": "^7.0.3",
+    "cz-customizable": "^6.3.0",
     "eslint": "^8.16.0",
     "eslint-plugin-jest": "^26.4.6",
     "fs-extra": "^10.1.0",
+    "husky": "^8.0.1",
     "inquirer": "^8.2.4",
     "jest": "^28.1.0",
     "trash": "^8.1.0"

@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "代码检测..."
+yarn lint
+
+echo "单元测试..."
+yarn test

@@ -9,6 +9,7 @@ const w_d_reg = /\d{0,2}\w+[-_]\w?\d{2,}[a-eA-E]?/; // 匹配 MKBD-S60 RED-195 2
  * @returns string
  */
 export const getCodeName = link => {
+  if (!link || !link.trim().length) return '';
   const match = link.match(d_d_reg) || link.match(w_d_reg);
   if (!match || !match.length) return '';
   return match[0];

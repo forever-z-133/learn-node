@@ -3,6 +3,7 @@ module.exports = {
     'utils/**/*.js',
     'test/**/*.js',
     'mine/**/*.js',
+    'trash/**',
   ],
   env: {
     browser: true,
