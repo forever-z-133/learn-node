@@ -77,8 +77,8 @@ export const stringToObject = (str, divide = '&', concat = '=') => {
     if (!item) return;
 
     const temp = item.split(concat);
-    const key = temp.shift().trim();
-    let value = temp.join(concat).trim();
+    const key = decodeURIComponent(temp.shift().trim());
+    let value = decodeURIComponent(temp.join(concat).trim());
 
     if (!key) return;
 
@@ -89,6 +89,45 @@ export const stringToObject = (str, divide = '&', concat = '=') => {
     result[key] = value;
   });
 
+  return result;
+};
+
+/**
+ * 对象转为键值对字符串
+ * {a:'1',b:'2'} 转为 a=1&b=2
+ * @param {Object} obj 对象
+ * @param {String} divide 键值对分割符
+ * @param {String} concat 键值对赋值符
+ * @returns string
+ */
+export const objectToString = (obj, divide = '&', concat = '=') => {
+  if (!obj || typeof obj !== 'object') return '';
+  const result = [];
+  Object.keys(obj).forEach(key => {
+    let val = obj[key];
+    result.push(encodeURIComponent(key) + concat + encodeURIComponent(val));
+  });
+  return result.join(divide);
+};
+
+/**
+ * 给链接加上参数
+ * @param {String} url 链接
+ * @param {String|Object} data 参数
+ * @returns string
+ */
+const uselessUrlSearchReg = /[?#]\B/g; // 单独的无用的 ? 和 # 符
+export const addDataToUrl = (url, data) => {
+  const result = url.replace(uselessUrlSearchReg, '');
+  if (!data) return result;
+
+  const concat = result.includes('?') ? '&' : '?';
+
+  if (typeof data === 'string') {
+    return result + concat + data;
+  } else if (typeOf(data) === 'object') {
+    return result + concat + objectToString(data);
+  }
   return result;
 };
 

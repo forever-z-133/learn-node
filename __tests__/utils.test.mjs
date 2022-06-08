@@ -5,6 +5,8 @@ import {
   sleep,
   divideArray,
   stringToObject,
+  objectToString,
+  addDataToUrl,
   camelize,
   camelizeKeys,
   getPureUrl,
@@ -76,6 +78,25 @@ describe('utils/index.mjs', () => {
     expect(stringToObject('a=1=1&b=2')).toStrictEqual({a:'1=1',b:'2'});
     expect(stringToObject('&b=2')).toStrictEqual({b:'2'});
     expect(stringToObject('=1&b=2')).toStrictEqual({b:'2'});
+  });
+
+  test('objectToString', () => {
+    expect(objectToString()).toStrictEqual('');
+    expect(objectToString({})).toStrictEqual('');
+    expect(objectToString({a:1})).toStrictEqual('a=1');
+    expect(objectToString({a:1,b:2})).toStrictEqual('a=1&b=2');
+    expect(objectToString({a:null,b:true})).toStrictEqual('a=null&b=true');
+  });
+
+  test('addDataToUrl', () => {
+    expect(addDataToUrl('index.html')).toStrictEqual('index.html');
+    expect(addDataToUrl('index.html?')).toStrictEqual('index.html');
+    expect(addDataToUrl('index.html#')).toStrictEqual('index.html');
+    expect(addDataToUrl('index.html', 'a=1')).toStrictEqual('index.html?a=1');
+    expect(addDataToUrl('index.html', { a: 1 })).toStrictEqual('index.html?a=1');
+    expect(addDataToUrl('index.html?x=0', 'a=1')).toStrictEqual('index.html?x=0&a=1');
+    expect(addDataToUrl('index.html?x=0', { a: 1 })).toStrictEqual('index.html?x=0&a=1');
+    expect(addDataToUrl('index.html', 1000)).toStrictEqual('index.html');
   });
 
   test('camelize', () => {
