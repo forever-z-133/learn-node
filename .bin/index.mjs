@@ -12,7 +12,7 @@ const run = (...args) => {
   const subCommandPath = pathsConfig[key];
   const command = `node ${subCommandPath} ${options.join(' ')}`;
 
-  console.log(command);
+  console.log(command, '\n');
   spawn.sync('cmd.exe', ['/c', command], { stdio: 'inherit' });
 }
 export default run;

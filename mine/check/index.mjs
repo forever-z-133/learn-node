@@ -14,7 +14,7 @@ const run = () => {
   });
 
   errors.forEach(item => {
-    console.log('异常'.red, item.path);
+    console.log('异常'.red, convertCodeName(item.name), item.path);
   });
 };
 

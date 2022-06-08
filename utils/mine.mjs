@@ -23,7 +23,7 @@ export const getCodeName = link => {
  * Example: snisadd432un 转为 SNIS-432
  */
 const codeNameDivideReg = /add|-|_/;
-const codeNamePartReg = /^(S)?(\d{2,7})(un)?(_(\d))?([A-E])?/;
+const codeNamePartReg = /^(S)?(\d{2,7})(un)?([_-](\d))?([A-E])?.*/;
 export const convertCodeName = name => {
   if (!name) return '';
   const [p, n, e] = name.split(codeNameDivideReg);

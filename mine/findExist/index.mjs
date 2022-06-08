@@ -5,7 +5,7 @@ const has = hasDownload();
 
 const run = entryName => {
   const similar = has.filter(file => {
-    return file.name.includes(entryName) || file.name.toLocaleLowerCase().includes(entryName);
+    return file.name.includes(entryName) || file.name.toLowerCase().includes(entryName);
   });
 
   if (similar.length > 0) {

@@ -9,7 +9,7 @@ export default {
   exist: resolve('mine/findExist/entry.mjs'),
   find: resolve('mine/findNotDownload/index.js'),
   remove: resolve('mine/findNotGood/index.js'),
-  rename: resolve('mine/rename/index.js'),
+  rename: resolve('mine/rename/entry.mjs'),
   same: resolve('mine/findSame/index.js'),
   check: resolve('mine/check/index.mjs'),
   alert: resolve('test/alert/entry.mjs'),

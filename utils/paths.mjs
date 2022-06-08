@@ -39,7 +39,7 @@ export function forEachDir(dir, fileCallback, dirCallback) {
 }
 
 // 获取已下载的番号
-const mineDirs = ['E:\\bad', 'E:\\下载2', 'E:\\下载3', 'I:\\下载过', 'I:\\无码', 'I:\\有码', 'I:\\写真'];
+const mineDirs = ['E:\\bad', 'E:\\FH', 'E:\\下载2', 'E:\\下载3', 'I:\\下载过', 'I:\\无码', 'I:\\有码', 'I:\\写真'];
 export const hasDownload = dirs => {
   if (typeof dirs === 'string') dirs = [dirs];
   dirs = dirs || mineDirs;

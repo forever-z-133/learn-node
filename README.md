@@ -20,7 +20,7 @@ foreverZ color
 
 ## 老色批工具
 
-- 将番号按 ABC-123.mp4 的格式进行重命名 `foreverZ rename` [源码](https://github.com/forever-z-133/learn-node/blob/master/mine/rename/index.js)
+- 将番号按 ABC-123.mp4 的格式进行重命名 `foreverZ rename` [源码](https://github.com/forever-z-133/learn-node/blob/master/mine/rename/entry.mjs)
 - 检查我本地是否已下载该番号 `foreverZ exist` [源码](https://github.com/forever-z-133/learn-node/blob/master/mine/findExist/entry.mjs)
 - 将不好看的删除，并留个 txt 番号备份 `foreverZ remove` [源码](https://github.com/forever-z-133/learn-node/blob/master/mine/findNotGood/index.js)
 - 读取番号合集文件，找出还未下载的番号链接 `foreverZ find` [源码](https://github.com/forever-z-133/learn-node/blob/master/mine/findNotDownload/index.js)
