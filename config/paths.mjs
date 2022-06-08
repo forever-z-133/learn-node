@@ -1,7 +1,12 @@
-import { resolve } from '../utils/paths.mjs';
+import path from 'path';
+import { getThisDir } from '../utils/paths.mjs';
+
+const thisDir = getThisDir();
+const rootPath = path.resolve(thisDir, '..');
+const resolve = uri => path.join(rootPath, uri);
 
 export default {
-  exist: resolve('mine/findExist/index.js'),
+  exist: resolve('mine/findExist/entry.mjs'),
   find: resolve('mine/findNotDownload/index.js'),
   remove: resolve('mine/findNotGood/index.js'),
   rename: resolve('mine/rename/index.js'),
