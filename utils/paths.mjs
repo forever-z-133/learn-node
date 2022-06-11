@@ -21,6 +21,16 @@ export const download = (url, output) => new Promise((resolve, reject) => {
   }
 });
 
+// 缓存数据
+export const useCache = fn => {
+  const cache = {};
+  return (...args) => {
+    var key = args.length + JSON.stringify(args);
+    if (key in cache) return cache[key];
+    return (cache[key] = fn(...args));
+  };
+};
+
 // 递归所有的文件，注意先遍历到的是最内部的文件
 const ignoreDirs = ['node_modules'];
 export function forEachDir(dir, fileCallback, dirCallback) {
@@ -40,7 +50,7 @@ export function forEachDir(dir, fileCallback, dirCallback) {
 
 // 获取已下载的番号
 const mineDirs = ['E:\\bad', 'E:\\FH', 'E:\\下载2', 'E:\\下载3', 'I:\\下载过', 'I:\\无码', 'I:\\有码', 'I:\\写真'];
-export const hasDownload = dirs => {
+export const hasDownload = useCache(dirs => {
   if (typeof dirs === 'string') dirs = [dirs];
   dirs = dirs || mineDirs;
   return dirs.reduce((re, dir) => {
@@ -52,4 +62,4 @@ export const hasDownload = dirs => {
     });
     return re.concat(files);
   }, []);
-};
+});
