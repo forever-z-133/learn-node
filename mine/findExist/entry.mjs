@@ -9,7 +9,7 @@ const entry = async () => {
 
   if (name === 'n') return process.exit(0);
 
-  run(name);
+  name && run(name);
   !inputName && entry();
 };
 

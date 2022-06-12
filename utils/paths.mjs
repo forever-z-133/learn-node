@@ -12,9 +12,9 @@ export const desktopPath = path.resolve('C:\\Users\\61775\\Desktop');
 export const getThisDir = () => path.dirname(process.argv[1]);
 
 // 下载文件
-export const download = (url, output) => new Promise((resolve, reject) => {
+export const download = (url, output, showDetail = false) => new Promise((resolve, reject) => {
   try {
-    spawn.sync('cmd.exe', ['/c', `curl -L ${url} -o ${output}`]);
+    spawn.sync('cmd.exe', ['/c', `curl -L ${url} -o ${output}`], showDetail ? { stdio: 'inherit' } : undefined);
     resolve();
   } catch(err) {
     reject(err);
