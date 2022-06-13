@@ -1,10 +1,7 @@
+import { hasDownload } from '../../utils/paths.mjs';
+import { removeCodeNamePart } from '../../utils/mine.mjs';
 import getVideosInTxtFile from './utils/getVideosInTxtFile.mjs';
 import '../../test/consoleColor/index.js';
-import { hasDownload } from '../../utils/paths.mjs';
-
-// 去掉番号的后缀
-const codeNamePartReg = /[A-E]$/;
-const removeCodeNamePart = name => name.replace(codeNamePartReg, '');
 
 // 该番号是否已下载
 const existCodeName = item => hasDownloadCodeNames.includes(item.name);

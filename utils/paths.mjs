@@ -63,3 +63,12 @@ export const hasDownload = useCache(dirs => {
     return re.concat(files);
   }, []);
 });
+
+// 获取名称相似的番号
+export const getSimilar = name => {
+  const has = hasDownload();
+  const similar = has.filter(file => {
+    return file.name.includes(name) || file.name.toLowerCase().includes(name);
+  });
+  return similar;
+};

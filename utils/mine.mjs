@@ -23,14 +23,14 @@ export const getCodeName = link => {
  * Example: snisadd432un 转为 SNIS-432
  */
 const codeNameDivideReg = /add|-|_/;
-const codeNamePartReg = /^(S)?(\d{2,7})(un)?([_-](\d))?([A-E])?.*/;
+const codeNameNumberReg = /^(S)?(\d{2,7})(un)?([_-](\d))?([A-E])?.*/;
 export const convertCodeName = name => {
   if (!name) return '';
   const [p, n, e] = name.split(codeNameDivideReg);
   if (!n) return p;
   const prev = p.toLocaleUpperCase();
   const temp = e && isNumberString(e) ? [n, e].join('_') : n;
-  const next = temp.replace(codeNamePartReg, (_, a, b, c, d, e, f) => {
+  const next = temp.replace(codeNameNumberReg, (_, a, b, c, d, e, f) => {
     const prefix = a ? a.toLocaleUpperCase() : '';
     const num = addZero(b, 3 - prefix.length);
     const linePart = e ? String.fromCodePoint(+e + 64) : '';
@@ -39,3 +39,12 @@ export const convertCodeName = name => {
   });
   return `${prev}-${next}`;
 };
+
+
+/**
+ * 去掉番号的后缀
+ * @param {String} name 标准番号
+ * @returns string
+ */
+const codeNamePartReg = /[A-E]$/;
+export const removeCodeNamePart = name => name.replace(codeNamePartReg, '');

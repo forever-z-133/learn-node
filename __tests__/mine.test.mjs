@@ -1,6 +1,7 @@
 import {
   getCodeName,
   convertCodeName,
+  removeCodeNamePart,
 } from '../utils/mine.mjs';
 
 describe('utils/mine.mjs', () => {
@@ -29,5 +30,9 @@ describe('utils/mine.mjs', () => {
     expect(convertCodeName('HEYZO-0016')).toBe('HEYZO-0016');
     expect(convertCodeName('MKBD-S03')).toBe('MKBD-S03');
     expect(convertCodeName('FC2-1174921A')).toBe('FC2-1174921A');
+  });
+
+  test('removeCodeNamePart', () => {
+    expect(removeCodeNamePart('AKA-022B')).toBe('AKA-022');
   });
 });

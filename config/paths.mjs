@@ -8,7 +8,7 @@ const resolve = uri => path.join(rootPath, uri);
 export default {
   exist: resolve('mine/findExist/entry.mjs'),
   find: resolve('mine/findNotDownload/entry.mjs'),
-  remove: resolve('mine/findNotGood/index.js'),
+  remove: resolve('mine/findNotGood/entry.mjs'),
   rename: resolve('mine/rename/entry.mjs'),
   same: resolve('mine/findSame/index.js'),
   check: resolve('mine/check/index.mjs'),
