@@ -4,7 +4,7 @@ module.exports = {
     { value: 'fix', name: '修复' },
     { value: 'docs', name: '文档变更' },
     { value: 'refactor', name: '重构' },
-    { value: 'perf', name: '性能优化' },
+    { value: 'perf', name: '优化' },
     { value: 'test', name: '增加测试' },
     { value: 'chore', name: '脚手架变动' },
   ],
