@@ -10,7 +10,6 @@ export default {
   find: resolve('mine/findNotDownload/entry.mjs'),
   remove: resolve('mine/findNotGood/entry.mjs'),
   rename: resolve('mine/rename/entry.mjs'),
-  same: resolve('mine/findSame/index.mjs'),
   check: resolve('mine/check/index.mjs'),
   alert: resolve('test/alert/entry.mjs'),
   w3c: resolve('test/w3cplus/index.js'),
