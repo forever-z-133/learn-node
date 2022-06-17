@@ -20,6 +20,7 @@ module.exports = {
     'sourceType': 'module',
   },
   plugins: ['jest'],
+  parser: '@babel/eslint-parser',
   rules: {
     'semi': 2,
     'quotes': [2, 'single'],
