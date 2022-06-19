@@ -215,14 +215,17 @@ export const forEachAsync = (list, func, options) => new Promise(resolve => {
 });
 
 /**
- * 唯一性的数组推送
- * @param {Function} func 判断函数
- * @returns function
+ * 将 json 中某个 key 转为 key map，通常用于后续查重
+ * @param {Array} array json
+ * @param {String} key json 中的 key
+ * @returns object
  */
-export const uniquePush = func => {
-  return (array, ...items) => {
-    items.flat().forEach((item, index) => {
-      if (func(item, index, array)) array.push(item);
-    });
-  };
+export const jsonToObject = (json, key = '') => {
+  const result = {};
+  json.forEach((item, index) => {
+    const name = key ? item[key] : item;
+    const value = key ? item : index;
+    result[name] = value;
+  });
+  return result;
 };

@@ -12,7 +12,7 @@ export default {
   rename: resolve('mine/rename/entry.mjs'),
   check: resolve('mine/check/index.mjs'),
   alert: resolve('test/alert/entry.mjs'),
-  w3c: resolve('test/w3cplus/index.mjs'),
+  w3c: resolve('test/w3cplus/entry.mjs'),
   color: resolve('test/consoleColor/index.js test'),
   font: resolve('test/previewFont/entry.mjs'),
   rm: resolve('test/removeSomething/entry.mjs'),

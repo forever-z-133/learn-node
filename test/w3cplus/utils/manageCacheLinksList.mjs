@@ -18,5 +18,5 @@ export const getCacheLinksList = () => {
 
 export const setCacheLinksList = links => {
   fs.ensureFileSync(cacheJsonFile);
-  fs.writeJSONSync(cacheJsonFile, links, 'utf8');
+  fs.writeJSONSync(cacheJsonFile, links, { spaces: 2, encoding: 'utf8' });
 };
