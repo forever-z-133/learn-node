@@ -1,17 +1,12 @@
 import { hasDownload } from '../../utils/paths.mjs';
 import { convertCodeName, removeCodeNamePart } from '../../utils/mine.mjs';
+import { uniquePush as unique } from '../../utils/index.mjs';
 import '../../test/consoleColor/index.js';
 
 const has = hasDownload();
 
 // 保持 array 值唯一的  push
-const uniquePush = (array, ...items) => {
-  items.flat().forEach(item => {
-    if (!array.some(file => file.base === item.base)) {
-      array.push(item);
-    }
-  });
-};
+const uniquePush = unique((item, index, array) => !array.some(file => file.base === item.base));
 
 // 判断番号结尾是否连号，比如 ABP-607A ABP-607B
 const consecutive = files => {

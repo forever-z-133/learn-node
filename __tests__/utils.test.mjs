@@ -11,6 +11,7 @@ import {
   camelizeKeys,
   getPureUrl,
   forEachAsync,
+  uniquePush,
 } from '../utils/index.mjs';
 
 jest.useFakeTimers();
@@ -139,5 +140,26 @@ describe('utils/index.mjs', () => {
     jest.runOnlyPendingTimers();
     expect(callback).toBeCalled();
     jest.runAllTimers();
+  });
+
+  test('uniquePush', () => {
+    const check1 = (item, index, array) => !array.some(file => file === item);
+    const push1 = uniquePush(check1);
+    const arr1 = [1, 2, 3];
+    push1(arr1, 1);
+    expect(arr1).toStrictEqual([1,2,3]);
+    push1(arr1, 4);
+    expect(arr1).toStrictEqual([1,2,3,4]);
+    push1(arr1, 5, 6);
+    expect(arr1).toStrictEqual([1,2,3,4,5,6]);
+    const check2 = (item, index, array) => !array.some(file => file.name === item.name);
+    const push2 = uniquePush(check2);
+    const arr2 = [{name:'aaa'}];
+    push2(arr2, {name:'aaa'});
+    expect(arr2).toStrictEqual([{name:'aaa'}]);
+    push2(arr2, {name:'bbb'});
+    expect(arr2).toStrictEqual([{name:'aaa'},{name:'bbb'}]);
+    push2(arr2, {name:'ccc'},{name:'ddd'});
+    expect(arr2).toStrictEqual([{name:'aaa'},{name:'bbb'},{name:'ccc'},{name:'ddd'}]);
   });
 });

@@ -213,3 +213,16 @@ export const forEachAsync = (list, func, options) => new Promise(resolve => {
 
   loop();
 });
+
+/**
+ * 唯一性的数组推送
+ * @param {Function} func 判断函数
+ * @returns function
+ */
+export const uniquePush = func => {
+  return (array, ...items) => {
+    items.flat().forEach((item, index) => {
+      if (func(item, index, array)) array.push(item);
+    });
+  };
+};
