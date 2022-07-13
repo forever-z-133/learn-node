@@ -1,15 +1,14 @@
-yarn command check
-yarn command exist ap-01
-yarn command find I:/种子/滨崎里绪浜崎りお森下えりか篠原絵梨香.txt
-yarn command remove 010120-001
-yarn command same
+yarn command font https://cdn.bootcss.com/twitter-bootstrap/3.4.1/css/bootstrap.min.css
+yarn command rm F:\QQMusicCache .png
+yarn command rmDir F:\QQMusicCache
 yarn command rename E:\下载3
+yarn command exist ap-01
+yarn command remove 010120-001
+yarn command find I:/种子/滨崎里绪浜崎りお森下えりか篠原絵梨香.txt
+yarn command check
+yarn command color
 yarn command alert
 yarn command concat
-yarn command color
-yarn command font https://cdn.bootcss.com/twitter-bootstrap/3.4.1/css/bootstrap.min.css
-yarn command rmDir F:\QQMusicCache
-yarn command rm F:\QQMusicCache .png
 yarn command notify
 yarn command w3c
 yarn command youtube https://www.youtube.com/watch?v=PLiDghW8oE0

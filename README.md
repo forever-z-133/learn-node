@@ -25,7 +25,6 @@ foreverZ color
 - 将不好看的删除，并留个 txt 番号备份 `foreverZ remove` [源码](https://github.com/forever-z-133/learn-node/blob/master/mine/findNotGood/index.js)
 - 读取番号合集文件，找出还未下载的番号链接 `foreverZ find` [源码](https://github.com/forever-z-133/learn-node/blob/master/mine/findNotDownload/index.js)
 - 检查番号文件的命名是否都已格式化 `foreverZ check` [源码](https://github.com/forever-z-133/learn-node/blob/master/mine/check/index.mjs)
-- 检查番号文件是否存在重复 `foreverZ same` [源码](https://github.com/forever-z-133/learn-node/blob/master/mine/findSame/index.js)
 
 ## 试验工具
 
@@ -35,4 +34,3 @@ foreverZ color
 - 给微信发通知 `foreverZ notify` [源码](https://github.com/forever-z-133/learn-node/blob/master/test/sendNotify/index.mjs)
 - 下载油管视频 `foreverZ youtube` [源码](https://github.com/forever-z-133/learn-node/blob/master/test/youtube/index.mjs)
 - 爬虫 w3cplus 网站 `foreverZ w3c` [源码](https://github.com/forever-z-133/learn-node/blob/master/test/w3cplus/index.js)
-- 将 m3u8 格式的视频转为 mp4 的视频 `foreverZ mp4` [源码](https://github.com/forever-z-133/learn-node/blob/master/trash/m3u8ToMp4/index.js)

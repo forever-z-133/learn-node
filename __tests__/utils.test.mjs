@@ -109,7 +109,7 @@ describe('utils/index.mjs', () => {
 
   test('camelizeKeys', () => {
     expect(camelizeKeys()).toStrictEqual({});
-    expect(camelizeKeys({'font-size':'10px'})).toStrictEqual({'fontSize':'10px'});
+    expect(camelizeKeys({'font-size':'10px'})).toStrictEqual({fontSize:'10px'});
   });
 
   test('getPureUrl', () => {
@@ -143,7 +143,7 @@ describe('utils/index.mjs', () => {
   });
 
   test('jsonToObject', () => {
-    expect(jsonToObject(['a','b'])).toStrictEqual({'a':0,'b':1});
-    expect(jsonToObject([{name:'a'},{name:'b'}], 'name')).toStrictEqual({'a':{name:'a'},'b':{name:'b'}});
+    expect(jsonToObject(['a','b'])).toStrictEqual({a:0,b:1});
+    expect(jsonToObject([{name:'a'},{name:'b'}], 'name')).toStrictEqual({a:{name:'a'},b:{name:'b'}});
   });
 });
