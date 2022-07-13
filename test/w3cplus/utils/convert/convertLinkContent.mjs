@@ -1,5 +1,5 @@
-import addBaseUrl from './addBaseUrl.mjs';
-import forEachDom from './forEachDom.mjs';
+import addBaseUrl from '../other/addBaseUrl.mjs';
+import forEachDom from '../other/forEachDom.mjs';
 
 // 处理正文内容
 const convertLinkContent = ($, $content) => {

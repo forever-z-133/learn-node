@@ -5,6 +5,7 @@ module.exports = {
     'mine/**/*.js',
     'trash/**',
     '*.md',
+    '*.html',
   ],
   env: {
     browser: true,
@@ -32,6 +33,7 @@ module.exports = {
     'no-unused-vars': 1,
     'eol-last': 2,
     'arrow-parens': [2, 'as-needed'],
-    'no-empty': [2, { allowEmptyCatch: true }]
+    'no-empty': [2, { allowEmptyCatch: true }],
+    'object-shorthand': 2,
   },
 };

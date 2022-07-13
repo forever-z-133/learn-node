@@ -1,5 +1,5 @@
 import path from 'path';
-import { baseUrl } from '../config.mjs';
+import { baseUrl } from '../../config.mjs';
 
 const localHrefReg = /^.*?\//;
 
