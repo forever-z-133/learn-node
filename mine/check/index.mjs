@@ -7,7 +7,7 @@ const has = hasDownload();
 // 保持 array 值唯一的  push
 const uniquePush = (array, ...items) => {
   items.flat().forEach(item => {
-    if (!array.some(file => file.base === item.base)) {
+    if (!array.some(file => file.base === item.base && file.dir === item.dir)) {
       array.push(item);
     }
   });
