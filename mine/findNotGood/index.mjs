@@ -12,8 +12,9 @@ const hasDir = 'I:\\下载过';
 // 番号文件是否存在于下载过文件夹
 const isInHasDir = file => file.dir === hasDir;
 
-const run = async (entryName, undoDelete, undoCreate) => {
-  const needCreateFile = path.join(hasDir, `${convertCodeName(entryName)}.txt`);
+const run = async (name, undoDelete, undoCreate) => {
+  const entryName = convertCodeName(name);
+  const needCreateFile = path.join(hasDir, `${entryName}.txt`);
   let isFirstRun = true;
   let needDelete = [];
   let needCreate = [];
@@ -33,7 +34,7 @@ const run = async (entryName, undoDelete, undoCreate) => {
 
   // 询问具体操作哪个文件，直到所有文件处理完
   if (needCreate.length > 0 || needDelete.length > 0) {
-    const { method, url } = await askForUndo(entryName, needDelete, needCreate);
+    const { method, url } = await askForUndo(name, needDelete, needCreate);
 
     switch (method) {
       case 'remove': {
@@ -54,7 +55,7 @@ const run = async (entryName, undoDelete, undoCreate) => {
       }
     }
 
-    await run(entryName, needDelete, needCreate);
+    await run(name, needDelete, needCreate);
   } else if (isFirstRun) {
     console.log('已存在', needCreateFile);
   }
