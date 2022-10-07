@@ -42,7 +42,9 @@ const run = () => {
     } else if (name !== file.name) {
       // 带结尾的番号，可能会存在非连号的错误番号
       uniquePush(needCheckMap[name], file);
-    } else if (sameKeyMap[name].length > 0) {
+    }
+
+    if (sameKeyMap[name].length > 0) {
       // 存在同名的番号，可能会存在文件格式不一的重复文件
       sameKeyMap[name].concat(file).forEach(item => {
         uniquePush(needCheckMap[name], item);
