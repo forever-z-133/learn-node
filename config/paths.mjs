@@ -13,6 +13,7 @@ export default {
   exist: resolve('mine/findExist/entry.mjs'),
   remove: resolve('mine/findNotGood/entry.mjs'),
   find: resolve('mine/findNotDownload/entry.mjs'),
+  expand: resolve('mine/expand/entry.mjs'),
   check: resolve('mine/check/index.mjs'),
   color: resolve('test/consoleColor/index.js test'),
   alert: resolve('test/alert/entry.mjs'),
