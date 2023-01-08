@@ -12,10 +12,10 @@ const getRealEntryFile = entryFile => {
 };
 
 // 该番号是否已下载
-const existCodeName = item => hasDownloadCodeNames.includes(item.name);
+const existCodeName = item => hasDownloadCodeNames.find(({ name }) => name === item.name);
 
 const has = hasDownload();
-const hasDownloadCodeNames = has.map(item => removeCodeNamePart(item.name));
+const hasDownloadCodeNames = has.map(({ name, path: url }) => ({ name: removeCodeNamePart(name), url }));
 
 const run = entryFile => {
   const url = getRealEntryFile(entryFile);
@@ -25,7 +25,7 @@ const run = entryFile => {
 
   matchLinks.forEach(link => {
     const inner = existCodeName(link);
-    inner ? doneLinks.push(link) : unDoneLinks.push(link);
+    inner ? doneLinks.push(inner) : unDoneLinks.push(link);
   });
 
   doneLinks.forEach(link => {
