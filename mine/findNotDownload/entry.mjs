@@ -6,7 +6,7 @@ const inputUrl = process.argv.slice(2).join(' ');
 
 /**
  * 测试数据
- * yarn command find I:/种子/滨崎里绪浜崎りお森下えりか篠原絵梨香.txt
+ * yarn command find H:/种子/滨崎里绪浜崎りお森下えりか篠原絵梨香.txt
  */
 
 const entry = async () => {

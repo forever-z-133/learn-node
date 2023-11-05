@@ -8,7 +8,7 @@ import '../../test/consoleColor/index.js';
 const getRealEntryFile = entryFile => {
   if (/^[Ii]:/.test(entryFile)) return entryFile;
   const name = path.basename(entryFile);
-  return path.join('I:\\种子', name);
+  return path.join('H:\\种子', name);
 };
 
 // 该番号是否已下载
