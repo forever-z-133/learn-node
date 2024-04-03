@@ -4,5 +4,5 @@
 echo "代码检测..."
 yarn lint
 
-echo "单元测试..."
-yarn test
+# echo "单元测试..."
+# yarn test

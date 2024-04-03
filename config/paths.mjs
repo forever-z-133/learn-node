@@ -21,4 +21,5 @@ export default {
   notify: resolve('test/sendNotify/index.mjs'),
   youtube: resolve('test/youtube/index.mjs'),
   w3c: resolve('test/w3cplus/entry.mjs'),
+  dat: resolve('test/dat2png/entry.mjs'),
 };

@@ -7,7 +7,7 @@ import { removeSync } from '../../utils/others.mjs';
 import askForUndo from './utils/askForUndo.mjs';
 import '../../test/consoleColor/index.js';
 
-const hasDir = 'I:\\下载过';
+const hasDir = 'F:\\下载过';
 
 // 番号文件是否存在于下载过文件夹
 const isInHasDir = file => file.dir === hasDir;

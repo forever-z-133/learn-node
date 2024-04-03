@@ -6,7 +6,7 @@ import spawn from 'cross-spawn';
 export const rootPath = path.resolve(process.cwd());
 
 // 桌面目录
-export const desktopPath = path.resolve('C:\\Users\\61775\\Desktop');
+export const desktopPath = path.resolve('C:\\Users\\Admin\\Desktop');
 
 // 兼容 __dirname
 export const getThisDir = () => path.dirname(process.argv[1]);
@@ -49,7 +49,7 @@ export function forEachDir(dir, fileCallback, dirCallback) {
 }
 
 // 获取已下载的番号
-const mineDirs = ['E:\\bad', 'E:\\FH', 'E:\\下载2', 'E:\\下载3', 'F:\\VR', 'I:\\下载过', 'H:\\无码', 'I:\\有码', 'F:\\写真'];
+const mineDirs = ['F:\\坏', 'E:\\下载3', 'F:\\下载过', 'F:\\无码', 'F:\\有码', 'F:\\麻豆', 'F:\\写真'];
 export const hasDownload = useCache(dirs => {
   if (typeof dirs === 'string') dirs = [dirs];
   dirs = dirs || mineDirs;
