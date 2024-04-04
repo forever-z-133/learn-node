@@ -10,11 +10,11 @@ const run = async dir => {
   // 遍历出需要转换的文件
   const outputPaths = [];
   forEachDir(dir, uri => {
-    if (!uri.endsWith('.dat')) return;
+    const { name, ext } = path.parse(uri);
+    if (ext !== '.dat') return;
 
     // 拼凑结果路径
-    const fileName = path.parse(uri).name;
-    const outputPath = path.format({ dir, name: fileName, ext: '.png' });
+    const outputPath = path.format({ dir, name, ext: '.png' });
 
     // 如果已经存在，可能是另一张 png，也可能是已经转换过的
     if (fs.existsSync(outputPath)) {

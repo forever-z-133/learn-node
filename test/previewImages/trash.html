@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+<meta charset="utf-8" />
+<meta name="renderer" content="webkit">
+<meta http-equiv="Content-Type" content="text/html" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="wap-font-scale" content="no">
+<link rel="shortcut icon" href="https://forever-z.oss-cn-shenzhen.aliyuncs.com/favicon.png" type="image/x-icon">
+<title>首页</title>
+<!--[if lt IE 9]><script>alert('您的浏览器版本过低，请更新本版本浏览器，或更换为诸如谷歌浏览器的现代浏览器')</script><![endif]-->
+<style>
+  .item { padding-left: 20px; }
+  img { width: 2em; height: 2em; object-fit: cover; vertical-align: top; }
+</style>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+  <p>选择一个文件夹，预览其中的图片</p>
+  <div id="app">
+    <button id="btn-choose-dir" @click="handleClick">点击</button>
+    <div class="file-tree">
+      <template v-for="item in data">
+        <TreeNode :data="item">
+      </template>
+    </div>
+  </div>
+  <script>
+    const enableExt = ['.png', '.jpg', '.jpeg', '.bmp', '.gif'].map(e => e.slice(1));
+
+    const TreeNode = Vue.defineComponent({
+      name: 'TreeNode',
+      props: ['data'],
+      template: `
+        <div class="item">
+          <span>{{ data.name }}</span>
+          <img v-if="data.src" :src="data.src" />
+          <div class="children">
+            <template v-for="item in data.children">
+              <TreeNode :data="item" />
+            </template>
+          </div>
+        </div>
+      `,
+    })
+
+    const app = Vue.createApp({
+      components: { TreeNode },
+      setup() {
+        const data = Vue.ref([])
+        async function handleClick() {
+          const ctx = await showDirectoryPicker()
+          const files = await readDir(ctx)
+          console.log(files)
+          data.value = files
+        }
+        return { data, handleClick }
+      },
+      template: `
+        <button id="btn-choose-dir" @click="handleClick">点击</button>
+        <div class="file-tree">
+          <template v-for="item in data">
+            <TreeNode :data="item" />
+          </template>
+        </div>
+      `
+    })
+    app.mount('#app')
+
+    async function readDir(ctx) {
+      const result = mapDeep(ctx, {
+        childrenKey: 'children',
+        isChildren: async (ctx) => {
+          if (ctx.kind !== 'directory') return []
+          return await ctx.entries()
+        },
+        isMatch: async (ctx) => {
+          const { kind, name } = ctx
+          const src = isImage(ctx) ? await readImage(await ctx.getFile()) : undefined
+          return { kind, name, src }
+        }
+      })
+      return result
+    }
+
+    async function mapDeep(arr, options) {
+      const {
+        isChildren = (item) => item.children,
+        isMatch = (item) => item,
+        childrenKey = 'children',
+      } = options
+      const result = []
+
+      const match = await isMatch(arr)
+      if (!match) return result
+
+      result.push(match)
+
+      match[childrenKey] = []
+      const children = await isChildren(arr)
+      for await (const [, x] of children) {
+        const child = await mapDeep(x, options)
+        match[childrenKey].push(...child)
+      }
+
+      return result
+    }
+
+    function isImage(ctx) {
+      const ext = ctx.name.split('.').pop()
+      return enableExt.includes(ext)
+    }
+
+    function readImage(file) {
+      return new Promise(resolve => {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const base64 = e.target.result
+          resolve(base64)
+        }
+        reader.readAsDataURL(file)
+      })
+    }
+  </script>
+</body>
+</html>
