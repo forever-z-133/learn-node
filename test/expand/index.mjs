@@ -3,19 +3,20 @@ import fs from 'fs-extra';
 import { forEachDir } from '../../utils/paths.mjs';
 import '../../test/consoleColor/index.js';
 
-const include = (fileStr, units) => units.some(unit => fileStr.endsWith(unit));
-
 const run = (entryDir, types) => {
-  const allFiles = [];
+  const should = [];
   const units = types.split(',');
 
-  forEachDir(entryDir, file => {
-    if (include(file, units)) {
-      allFiles.push(file);
+  forEachDir(entryDir, (file, xpath, basename) => {
+    const { ext } = path.parse(basename);
+    const matchUnit = units.includes(ext);
+    const isNotTop = xpath.length > 0;
+    if (matchUnit && isNotTop) {
+      should.push(file);
     }
   });
 
-  allFiles.forEach(file => {
+  should.forEach(file => {
     const output = path.resolve(entryDir, path.basename(file));
     fs.moveSync(file, output);
     console.log('移动', file.black, '到', output.green);

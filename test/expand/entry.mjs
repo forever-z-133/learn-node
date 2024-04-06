@@ -1,6 +1,11 @@
 import inquirer from 'inquirer';
 import run from './index.mjs';
 
+/**
+ * 将该文件中的所有子文件抽离到最上层
+ * yarn command expand E:\下载3 .mp4,.rmvb
+ */
+
 const inputName = process.argv[2];
 const inputTypes = process.argv[3];
 
