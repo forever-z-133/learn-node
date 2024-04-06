@@ -31,19 +31,20 @@ export const useCache = fn => {
   };
 };
 
-// 递归所有的文件，注意先遍历到的是最内部的文件
+// 递归所有的文件，注意是先遍历到的是最内部的文件
+// xpath 用于判断当前位置，比如获取层数或父级
 const ignoreDirs = ['node_modules'];
-export function forEachDir(dir, fileCallback, dirCallback) {
-  const files = fs.readdirSync(dir);
+export function forEachDir(dir, fileCallback, dirCallback, _xpath = []) {
+  let files = fs.readdirSync(dir);
+  files = files.filter(file => !ignoreDirs.includes(file));
   files.forEach(file => {
-    if (ignoreDirs.includes(file)) return;
     const uri = path.join(dir, file);
     const isDirectory = fs.statSync(uri).isDirectory();
     if (!isDirectory) {
-      fileCallback && fileCallback(uri);
+      fileCallback && fileCallback(uri, _xpath, file);
     } else {
-      forEachDir(uri, fileCallback, dirCallback);
-      dirCallback && dirCallback(uri);
+      forEachDir(uri, fileCallback, dirCallback, [..._xpath, file]);
+      dirCallback && dirCallback(uri, _xpath, file);
     }
   });
 }
