@@ -22,4 +22,5 @@ export default {
   youtube: resolve('test/youtube/index.mjs'),
   w3c: resolve('test/w3cplus/entry.mjs'),
   dat: resolve('test/dat2png/entry.mjs'),
+  image: resolve('test/previewImages/entry.mjs'),
 };

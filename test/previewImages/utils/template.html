@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+<meta charset="utf-8" />
+<meta name="renderer" content="webkit">
+<meta http-equiv="Content-Type" content="text/html" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="wap-font-scale" content="no">
+<link rel="shortcut icon" href="https://forever-z.oss-cn-shenzhen.aliyuncs.com/favicon.png" type="image/x-icon">
+<title>首页</title>
+<!--[if lt IE 9]><script>alert('您的浏览器版本过低，请更新本版本浏览器，或更换为诸如谷歌浏览器的现代浏览器')</script><![endif]-->
+<style>
+body { background: #e7e7e7; margin-bottom: 10px; }
+img { max-width: 100%; margin: 0 auto; display: block; }
+.file-tree > .fold { border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 10px; }
+.children { display: flex; flex-wrap: wrap; gap: 20px; }
+.item img { width: 100px; height: 100px; object-fit: contain; }
+</style>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script>
+    const ImageItem = Vue.defineComponent({
+      name: 'ImageItem',
+      props: ['data'],
+      setup(props) {
+        function handlePreview(src) {
+          window.open(src, '_blank')
+        }
+        const data = Vue.toRef(props, 'data')
+        return { data, handlePreview }
+      },
+      template: `
+        <div class="item" @contextmenu="handlePreview(data.src)">
+          <img :src="data.src" />
+          <span>{{ data.name }}</span>
+        </div>
+      `,
+    })
+
+    const TreeNode = Vue.defineComponent({
+      name: 'TreeNode',
+      components: { ImageItem },
+      props: ['data', 'depth'],
+      template: `
+        <div class="fold" :data-depth="depth">
+          <span>{{ data.name }}</span>
+          <div class="children">
+            <template v-if="data.src">
+              <ImageItem :data="data" />
+            </template>
+            <template v-for="item in data.children">
+              <TreeNode :data="item" :depth="depth + 1" />
+            </template>
+          </div>
+        </div>
+      `,
+    })
+
+    const App = Vue.defineComponent({
+      name: 'App',
+      components: { TreeNode },
+      setup(props) {
+        const data = {/* data */}
+        return { ...data }
+      },
+      template: `
+        <div class="file-tree">
+          <template v-for="item in tree">
+            <TreeNode :data="item" :depth="0" />
+          </template>
+        </div>
+      `,
+    })
+
+    const app = Vue.createApp(App)
+    app.mount('#app')
+  </script>
+</body>
+</html>

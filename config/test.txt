@@ -6,7 +6,7 @@ yarn command exist ap-01
 yarn command remove 010120-001
 yarn command find H:/种子/滨崎里绪浜崎りお森下えりか篠原絵梨香.txt
 yarn command check
-yarn command expand E:\下载3 .mp4,.rmvb
+yarn command expand E:/下载3 .mp4,.rmvb
 yarn command color
 yarn command alert
 yarn command concat
@@ -14,3 +14,4 @@ yarn command notify
 yarn command w3c
 yarn command youtube https://www.youtube.com/watch?v=PLiDghW8oE0
 yarn command dat C:/Users/Admin/Desktop/Fatury-orochii
+yarn command image D:/Steam/steamapps/workshop/content/1468810/2814703549/ModAssets/Fatury/Game/PortraitDynamic/Woman/Body
